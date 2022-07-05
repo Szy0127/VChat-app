@@ -1,5 +1,8 @@
 
 
 //后端
-const apiUrl='http://192.168.96.1:8080';
-export {apiUrl};
+
+const server_ip = '192.168.60.174';
+const apiUrl=`http://${server_ip}:8080`;
+const nodeServerUrl = `http://${server_ip}:5000`;
+export {apiUrl,nodeServerUrl};

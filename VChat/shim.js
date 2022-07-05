@@ -1,3 +1,8 @@
+/*
+simple-peer用到加密函数 需要用react-native-crypto覆盖
+官网说需要import这个文件 但实际上不需要也行
+*/
+
 if (typeof __dirname === 'undefined') global.__dirname = '/'
 if (typeof __filename === 'undefined') global.__filename = ''
 if (typeof process === 'undefined') {

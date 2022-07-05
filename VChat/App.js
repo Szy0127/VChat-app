@@ -5,13 +5,14 @@ import {View} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import { NavigationContainer,useNavigation } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import { Provider } from '@ant-design/react-native';
 import {LoginScreen} from "./screens/LoginScreen";
 import {HomeScreen} from "./screens/HomeScreen";
 import {SplashScreen} from "./components/splash";
-import {AuthContext} from "./context"
-import {apiUrl} from "./urlconfig"
+import {AuthContext} from "./context";
+import { checkSession } from './service/userService';
 const Stack = createStackNavigator();
-const CHECK_URL=apiUrl+"/checkSession";
+
 
 
 /*
@@ -66,26 +67,15 @@ const App = ()=> {
       }
 
       // After restoring token, we may need to validate it in production apps
-      fetch(CHECK_URL,{
-          method:'POST',
-          headers: {
-              'Content-Type': 'application/json',
-          },
-          body:JSON.stringify({}),
-      })
-          .then((response) =>{return response.json();})
-          .then((responseData) => {
-              if(responseData.status<0){
-                  AsyncStorage.removeItem("@Bookstore:token");
-                  dispatch({ type: 'RESTORE_TOKEN', token: null });
-              }else{
-                  dispatch({ type: 'RESTORE_TOKEN', token: userToken });
-              }
-          })
-          .catch((error)=>{
-              console.error(error);
-          });
-  };
+      checkSession(        (responseData) => {
+          if(responseData.status<0){
+              AsyncStorage.removeItem("@Bookstore:token");
+              dispatch({ type: 'RESTORE_TOKEN', token: null });
+          }else{
+              dispatch({ type: 'RESTORE_TOKEN', token: userToken });
+          }
+      });
+    }
 
     useEffect(() => {
         // Fetch the token from storage then navigate to our appropriate place
@@ -109,6 +99,7 @@ const App = ()=> {
         []
     )//只执行一次
     return(
+      <Provider>
         <AuthContext.Provider value={authContext}>
             <NavigationContainer>
                 <Stack.Navigator>
@@ -134,6 +125,7 @@ const App = ()=> {
                 </Stack.Navigator>
             </NavigationContainer>
         </AuthContext.Provider>
+      </Provider>
     );
 }
 

@@ -8,6 +8,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import {BookScreen} from './BookScreen';
 import {BookListScreen} from "./BookListScreen"
 import { SafeAreaProvider} from 'react-native-safe-area-context';
+import Demo from '../demo';
 const Stack = createStackNavigator();
 function BookListAndDetail(){
     return (
@@ -45,7 +46,7 @@ function MyProfileScreen({navigation}) {
 export function HomeScreen(){
     return (
             <Stack.Navigator initialRouteName="Home">
-                {/* <Stack.Screen name="Books" component={BookListAndDetail} /> */}
+                <Stack.Screen name="demo" component={Demo} />
                 <Stack.Screen name="MyCart" component={MyCartScreen} />
                 <Stack.Screen name="MyOrder" component={MyOrderScreen} />
                 <Stack.Screen name="MyProfile" component={MyProfileScreen} />

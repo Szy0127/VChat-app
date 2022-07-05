@@ -14,6 +14,7 @@ import {
 } from 'react-native-webrtc';
 import Peer from 'simple-peer';
 
+import { nodeServerUrl } from './urlconfig';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 
@@ -27,8 +28,8 @@ https://github.com/react-native-webrtc/react-native-webrtc/issues/1159
 
 */
 //console.log(new RTCPeerConnection().addStream);
-let server_addr = 'http://192.168.1.23:5000'
-const socket = io.connect(server_addr);
+
+const socket = io.connect(nodeServerUrl);
 
 
 
