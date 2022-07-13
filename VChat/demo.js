@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import io from 'socket.io-client'
 import { Button } from '@ant-design/react-native'
-import { Text,TextInput ,View,StyleSheet } from 'react-native'
+import { Text,TextInput ,View,StyleSheet,FlatList} from 'react-native'
 import {
   RTCPeerConnection,
   RTCIceCandidate,
@@ -18,7 +18,7 @@ import { nodeServerUrl } from './urlconfig';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 
-import { getFriends } from './service/userService';
+import { getFriends, getSocketIDByUserID, updateSocketID } from './service/userService';
 /*
 
 
@@ -72,7 +72,8 @@ function Demo() {
     socket.on('me', (id) => {
       setMe(id);
       console.log("in");
-      console.log(id)
+      console.log(id);
+      updateSocketID(id);
     })
     socket.on('callUsr', (data) => {
       console.log("incallUsr");
@@ -171,12 +172,32 @@ function Demo() {
   console.log("fresh");
   console.log(friends);
   //RTCView外面如果还有View则不能正常显示
+  const call_onPress = (callID)=>{
+      // console.log(callID);
+      getSocketIDByUserID(callID,
+        (data)=>{
+          if(data.length>0){
+              callusr(data);
+          }else{
+            alert("好友不在线");
+          }
+        }
+        )
+  }
+  const renderItem = ({item})=>{
+    return   (
+    <View style={styles.row}>
+        <View style={{...styles.column,flex:5}}><Text style={{...styles.text}}>{item.username}</Text></View>
+        <View style={{...styles.column,flex:3}}><Button onPress={()=>call_onPress(item.userID)}>视频通话</Button></View>
+    </View>    
+  );
+  }
   return (
     <SafeAreaView style={styles.body}>
-            {/* <FlatList
-              data={birthday_data}
+            <FlatList
+              data={friends}
               renderItem={renderItem}
-            /> */}
+            />
 
           {stream &&
               <RTCView
@@ -226,6 +247,24 @@ const styles = StyleSheet.create({
     flex: 1,
     height:100
   },
+  row:{
+    flex:1,
+    flexDirection: 'row', 
+    justifyContent: 'space-around',
+    marginHorizontal:10,
+    // alignItems:'center'
+  },
+    column:{
+    flex:1,
+    marginVertical:3,
+  },
+  text:{
+		flex: 1, 
+    fontSize:25,
+    paddingHorizontal:2
+		// justifyContent: 'center',
+        // alignItems:'center'
+	},
   footer: {
     backgroundColor: Colors.lighter,
     position: 'absolute',

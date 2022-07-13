@@ -37,4 +37,12 @@ const getFriends = (callback)=>{
     postRequest(apiUrl+"/getFriends",{},callback);
 }
 
-export {checkSession,login,getFriends};
+const getSocketIDByUserID = (userID,callback)=>{
+    postRequest_v2(apiUrl+"/getSocketByUser",{userID:userID},callback);
+}
+
+const updateSocketID = (socketID)=>{
+    postRequest_v2(apiUrl+"/updateSocket",{socketID:socketID},()=>{});
+}
+
+export {checkSession,login,getFriends,getSocketIDByUserID,updateSocketID};
