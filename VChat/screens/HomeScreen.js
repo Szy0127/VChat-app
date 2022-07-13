@@ -46,7 +46,7 @@ function MyProfileScreen({navigation}) {
 export function HomeScreen(){
     return (
             <Stack.Navigator initialRouteName="Home">
-                <Stack.Screen name="demo" component={Demo} />
+                <Stack.Screen name="demo" component={Demo} options={{headerShown:false}}/>
                 <Stack.Screen name="MyCart" component={MyCartScreen} />
                 <Stack.Screen name="MyOrder" component={MyOrderScreen} />
                 <Stack.Screen name="MyProfile" component={MyProfileScreen} />

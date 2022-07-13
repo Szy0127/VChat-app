@@ -18,7 +18,7 @@ import { nodeServerUrl } from './urlconfig';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 
-
+import { getFriends } from './service/userService';
 /*
 
 
@@ -51,6 +51,9 @@ function Demo() {
   const userVideo = useRef();
   const connectionRef = useRef();
 
+  const [friends,setFriends] = useState([]);
+
+
   const start_stream = async () => {
     console.log('start');
     if (!stream) {
@@ -64,18 +67,7 @@ function Demo() {
     }
   };
   useEffect(() => {
-    // mediaDevices.getUserMedia(MediaStream).then(
-    //   (stream) => {
-    //     console.log(stream);
-    //     setStream(stream);
-    //     // console.log(myVideo.current);
-    //     // myVideo.current.srcObject = stream;
-    //   }).catch(
-    //     (err) => {
-    //       console.log(err);
-    //     }
-    //   );
-    // handlePhoto();
+    getFriends((data)=>setFriends(data));
     start_stream();
     socket.on('me', (id) => {
       setMe(id);
@@ -123,13 +115,8 @@ function Demo() {
       })
     })
     //接受返回的answer
-    //似乎react-native 不支持 on('stream')
-    // peer.on('stream', (ostream) => {
-    //   console.log("instream");
-    //   //console.log(ostream);
-    //   // userVideo.current.srcObject = stream;
-    //   setOtherStream(ostream);
-    // })
+    //似乎react-native 不支持 peer.on('stream')
+
     peer._pc.addEventListener('addstream',event=>{
       setOtherStream(event.stream);
     })
@@ -182,9 +169,14 @@ function Demo() {
   }
 
   console.log("fresh");
+  console.log(friends);
   //RTCView外面如果还有View则不能正常显示
   return (
     <SafeAreaView style={styles.body}>
+            {/* <FlatList
+              data={birthday_data}
+              renderItem={renderItem}
+            /> */}
 
           {stream &&
               <RTCView
@@ -232,6 +224,7 @@ const styles = StyleSheet.create({
   },
   stream: {
     flex: 1,
+    height:100
   },
   footer: {
     backgroundColor: Colors.lighter,

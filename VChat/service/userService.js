@@ -1,42 +1,40 @@
 
 import { apiUrl } from "../urlconfig";
 import { Alert } from "react-native";
-const postRequest = (url,opts,callback)=>{
-    fetch(url,opts)
-        .then((response) =>{return response.json();})
-        .then((responseData) => {
-            callback(responseData);
-        })
-        .catch((error)=>{
-            console.error(error);
-            Alert.alert(error);
-        });
-};
+import { postRequest,postRequest_v2 } from "./utils";
+// const postRequest = (url,opts,callback)=>{
+//     fetch(url,opts)
+//         .then((response) =>{
+//             console.log(response)
+//             return response.json();})
+//         .then((responseData) => {
+//             console.log(responseData)
+//             callback(responseData);
+//         })
+//         .catch((error)=>{
+//             console.error(error);
+//             Alert.alert(error);
+//         });
+// };
 
 const checkSession = (callback) =>{
-    const opts = {
-        method:'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body:JSON.stringify({}),
-    };
-    postRequest(apiUrl+"/checkSession",opts,callback);
+    postRequest(apiUrl+"/checkSession",{},callback);
 }
 
 const login = (username,password,callback)=>{
-    const opts = {
-        method:'POST',
-        credentials: 'include',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body:JSON.stringify({
-            "username":username,
-            "password":password,
-        }),
-    };
-    postRequest(apiUrl+"/login",opts,callback);
+    postRequest_v2(apiUrl+"/login",{username:username,password:password},callback);
 }
 
-export {checkSession,login};
+const getFriends = (callback)=>{
+    // const opts = {
+    //     method:'POST',
+    //     credentials: 'include',
+    //     headers: {
+    //         'Content-Type': 'application/json',
+    //     },
+    //     body:JSON.stringify({}),
+    // };
+    postRequest(apiUrl+"/getFriends",{},callback);
+}
+
+export {checkSession,login,getFriends};
