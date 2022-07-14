@@ -20,7 +20,9 @@ import { postRequest,postRequest_v2 } from "./utils";
 const checkSession = (callback) =>{
     postRequest(apiUrl+"/checkSession",{},callback);
 }
-
+const logout = ()=>{
+    postRequest(apiUrl+"/logout",{},()=>{});
+}
 const login = (username,password,callback)=>{
     postRequest_v2(apiUrl+"/login",{username:username,password:password},callback);
 }
@@ -45,4 +47,4 @@ const updateSocketID = (socketID)=>{
     postRequest_v2(apiUrl+"/updateSocket",{socketID:socketID},()=>{});
 }
 
-export {checkSession,login,getFriends,getSocketIDByUserID,updateSocketID};
+export {checkSession,login,getFriends,getSocketIDByUserID,updateSocketID,logout};

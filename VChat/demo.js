@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState,useContext } from 'react'
 import io from 'socket.io-client'
 import { Button } from '@ant-design/react-native'
 import { Text,TextInput ,View,StyleSheet,FlatList} from 'react-native'
@@ -18,7 +18,8 @@ import { nodeServerUrl } from './urlconfig';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 
-import { getFriends, getSocketIDByUserID, updateSocketID } from './service/userService';
+import { getFriends, getSocketIDByUserID, updateSocketID,logout } from './service/userService';
+import { AuthContext } from './context';
 /*
 
 
@@ -51,8 +52,13 @@ function Demo() {
   const userVideo = useRef();
   const connectionRef = useRef();
 
+  const [showFriends,setShowFriends] = useState(true);
+
   const [friends,setFriends] = useState([]);
 
+  const { signOut } = useContext(AuthContext);
+
+  
 
   const start_stream = async () => {
     console.log('start');
@@ -85,6 +91,7 @@ function Demo() {
   }, [])
   //呼叫
   const callusr = (idtoCall) => {
+    setShowFriends(false);
     console.log(idtoCall);
     //对等连接
     const peer = new Peer(
@@ -133,6 +140,7 @@ function Demo() {
 
   //接听视频流
   const answerCall = () => {
+    setShowFriends(false);
     console.log("answerCall");
     setCallAccepted(true);
     const peer = new Peer(
@@ -194,11 +202,19 @@ function Demo() {
   }
   return (
     <SafeAreaView style={styles.body}>
-            <FlatList
+      <Button onPress={()=>{
+        logout();
+        signOut();
+      }}>退出</Button>
+      {
+        showFriends &&
+                    <FlatList
               data={friends}
               renderItem={renderItem}
               styles={{flex:1}}
             />
+      }
+
 
           {stream &&
               <RTCView
