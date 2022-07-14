@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState,useContext } from 'react'
 import io from 'socket.io-client'
-import { Button } from '@ant-design/react-native'
+import { Button,Toast } from '@ant-design/react-native'
 import { Text,TextInput ,View,StyleSheet,FlatList} from 'react-native'
 import {
   RTCPeerConnection,
@@ -18,7 +18,7 @@ import { nodeServerUrl } from './urlconfig';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 
-import { getFriends, getSocketIDByUserID, updateSocketID,logout } from './service/userService';
+import { getFriends, getSocketIDByUserID, updateSocketID,logout,addFriend } from './service/userService';
 import { AuthContext } from './context';
 /*
 
@@ -52,7 +52,9 @@ function Demo() {
   const userVideo = useRef();
   const connectionRef = useRef();
 
-  const [showFriends,setShowFriends] = useState(true);
+  const [friendName,setFriendName] = useState('');
+
+  const [inConversation,setInConversation] = useState(false);
 
   const [friends,setFriends] = useState([]);
 
@@ -91,7 +93,7 @@ function Demo() {
   }, [])
   //呼叫
   const callusr = (idtoCall) => {
-    setShowFriends(false);
+    setInConversation(true);
     console.log(idtoCall);
     //对等连接
     const peer = new Peer(
@@ -140,7 +142,7 @@ function Demo() {
 
   //接听视频流
   const answerCall = () => {
-    setShowFriends(false);
+    setInConversation(true);
     console.log("answerCall");
     setCallAccepted(true);
     const peer = new Peer(
@@ -207,14 +209,34 @@ function Demo() {
         signOut();
       }}>退出</Button>
       {
-        showFriends &&
-                    <FlatList
-              data={friends}
-              renderItem={renderItem}
-              styles={{flex:1}}
+        !inConversation &&
+        (
+          <View>
+            <View>
+            <TextInput
+            placeholder='好友用户名'
+            onChangeText={text => setFriendName(text)}
+            value={friendName}
             />
+            <Button onPress={()=>{
+                console.log(friendName);
+                addFriend(friendName,(data)=>{
+                    if(data){
+                      Toast.success("添加成功",1);
+                    }else{
+                      Toast.fail("不存在此用户",1);
+                    }
+                });
+            }}>添加好友</Button>
+          </View>
+              <FlatList
+                data={friends}
+                renderItem={renderItem}
+                styles={{flex:1}}
+              />
+        </View>
+        )
       }
-
 
           {stream &&
               <RTCView

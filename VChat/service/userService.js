@@ -73,8 +73,12 @@ const getSocketIDByUserID = (userID,callback)=>{
     postRequest_v2(apiUrl+"/getSocketByUser",{userID:userID},callback);
 }
 
+const addFriend = (friendName,callback)=>{
+    postRequest_v2(apiUrl+"/addFriend",{friendName:friendName},callback);
+}
+
 const updateSocketID = (socketID)=>{
     postRequest_v2(apiUrl+"/updateSocket",{socketID:socketID},()=>{});
 }
 
-export {checkSession,login,getFriends,getSocketIDByUserID,updateSocketID,logout,register};
+export {checkSession,login,getFriends,getSocketIDByUserID,updateSocketID,logout,register,addFriend};
