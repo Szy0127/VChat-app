@@ -197,6 +197,7 @@ function Demo() {
             <FlatList
               data={friends}
               renderItem={renderItem}
+              styles={{flex:1}}
             />
 
           {stream &&
@@ -241,10 +242,14 @@ function Demo() {
 const styles = StyleSheet.create({
   body: {
     backgroundColor: Colors.white,
-    ...StyleSheet.absoluteFill
+    ...StyleSheet.absoluteFill,
+    flex:1,
+    flexDirection: 'column', 
+    justifyContent: 'center',
+    // alignItems:'center'
   },
   stream: {
-    flex: 1,
+    flex: 5,
     height:100
   },
   row:{
