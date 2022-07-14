@@ -109,16 +109,33 @@ https://github.com/tradle/react-native-crypto
   这个是网络不好 可以多试几次  或者用cnpm 或者换源
 
 - `could not get batchedbridge` 重启metro
+
 - `Invariant Violation: Module AppRegistry is not a registered callable module (calling runApplication)`重启metro
+
 - `npm ERR! could not determine executable to run`仔细看命令 npm莫名其妙会变成npx
+
 - `module could not be found within the project or in these directories:node_modules` 重启metro 如果不行删了node_modules再装
+
 - `warn No apps connected. Sending "reload" to all React Native apps failed. Make sure your app is running in the simulator or on a phone connected via USB.
 info Reloading app...`
 这个的原因是app本身有问题 导致一打开就会闪退 或者其他原因根本打不开 和模拟器的连接没有问题  但是找不到任何报错的信息 因此只能控制变量去看;
 少装几个包就没这个问题了 因此是装了的包 即使代码里没有用 也会导致这个问题;具体是react-native-webrtc要求安卓的minSdkVersion 需要修改android目录下的配置文件
 
 - `'react-native' 不是内部或外部命令，也不是可运行的程序
-或批处理文件。`这个可能是uninstall的时候多删东西了 直接`npm install`就行
+  或批处理文件。`这个可能是uninstall的时候多删东西了 直接`npm install`就行
+
 - `TypeError: undefined is not an object (evaluating 'process.version.split')`这个问题并没有解决
 
-https://github.com/facebook/react-native/issues/30654
+  https://github.com/facebook/react-native/issues/30654
+
+
+
+## 待解决的问题
+
+- 使用路由后导致页面卡死
+
+- 某些手机下载软件后网络请求错误  可能是手机版本导致禁用了http 可能https可以解决
+
+  [React Native: TypeError: Network request failed_翻船现场的博客-CSDN博客](https://blog.csdn.net/qq_32312317/article/details/80868118)
+
+  [HTTP Fetch fails with "TypeError: Network request failed" => Resolved · Issue #32931 · facebook/react-native (github.com)](https://github.com/facebook/react-native/issues/32931)

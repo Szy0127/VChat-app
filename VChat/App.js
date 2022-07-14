@@ -69,7 +69,7 @@ const App = ()=> {
 
       // After restoring token, we may need to validate it in production apps
       checkSession(        (responseData) => {
-        console.log(responseData);
+        // console.log(responseData);
           if(!responseData.success){
               AsyncStorage.removeItem("@Bookstore:token");
               dispatch({ type: 'RESTORE_TOKEN', token: null });

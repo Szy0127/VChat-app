@@ -33,11 +33,11 @@ let postRequest = (url, json, callback) => {
         method: "POST",
         body: JSON.stringify(json),
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
         },
         credentials: "include"
     };
-
+    // alert(url);
     fetch(url,opts)
         .then((response) => {
             return response.json()
@@ -47,6 +47,7 @@ let postRequest = (url, json, callback) => {
         })
         .catch((error) => {
             console.log(error);
+            alert(error);
         });
 };
 
