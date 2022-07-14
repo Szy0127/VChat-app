@@ -11,6 +11,7 @@ import {HomeScreen} from "./screens/HomeScreen";
 import {SplashScreen} from "./components/splash";
 import {AuthContext} from "./context";
 import { checkSession } from './service/userService';
+import { RegisterScreen } from './screens/RegisterScreen';
 const Stack = createStackNavigator();
 
 
@@ -123,6 +124,7 @@ const App = ()=> {
                         // User is signed in
                         <Stack.Screen name="Home" component={HomeScreen} options={{headerShown:false}}/>
                     )}
+                    <Stack.Screen name="Register" component={RegisterScreen} options={{headerShown:false}}/>
                 </Stack.Navigator>
             </NavigationContainer>
         </AuthContext.Provider>

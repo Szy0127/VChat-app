@@ -1,4 +1,4 @@
-import React,{useState} from 'react';
+import React,{useState,useContext} from 'react';
 import {
     StyleSheet,
     View,
@@ -11,45 +11,22 @@ import {
 import AsyncStorage from '@react-native-community/async-storage';
 import {AuthContext} from "../context";
 import {loading} from "../util/utils.js";
-import {login} from "../service/userService";
+import {register} from "../service/userService";
 import { Toast,Button } from '@ant-design/react-native';
 // 获取屏幕的宽和高
 let {width,height} = Dimensions.get('window');
 
-var isSuccess ;
-function fetchData({name,password,signIn}) {
-    login(name,password,
-        (responseData) => {
-            let _storeData = async () => {
-                try {
-                    await AsyncStorage.setItem("@Bookstore:token",'exist');
-                } catch (error) {
-                    // Error saving data
-                }
-            };
-            _storeData();
 
-            // 注意，这里使用了this关键字，为了保证this在调用时仍然指向当前组件，我们需要对其进行“绑定”操作
-            // console.log(responseData);
-            // console.log(responseData);
-            isSuccess=(responseData.success?true:false);
-            Toast.removeAll();
-            if(isSuccess){
-                signIn()
-            }else{
-                Alert.alert("用户名或密码错误！");
-            }
-        }
-        )
-}
-export function LoginScreen(props){
+export function RegisterScreen(props){
     const [name, setName] = useState('');
     const [password,setPassword]=useState('');
-    const { signIn } = React.useContext(AuthContext);
+    const [password_confirm,setPassword_confirm]=useState('');
+    const [email,setEmail]=useState('');
+    const { signUp } = useContext(AuthContext);
     return (
             <View style={{ flex: 1}}>
                 <View style={styles.container}>
-                    <Text style={styles.titleStyle}>登录</Text>
+                    <Text style={styles.titleStyle}>注册</Text>
                     {/*账号和密码*/}
                     <TextInput
                         style={styles.textInputStyle}
@@ -65,21 +42,35 @@ export function LoginScreen(props){
                         value={password}
                         password={true}/>
 
-                    {/*登录*/}
-                    <Button type="primary" style={styles.loginBtnStyle}onPress={() => {
-                        loading();
-                        fetchData({name,password,signIn});
-                    }}>
-                        登录
-                    </Button>
+                    <TextInput
+                        style={styles.textInputStyle}
+                        placeholder='请再次输入密码'
+                        onChangeText={text => setPassword_confirm(text)}
+                        secureTextEntry={true}
+                        value={password_confirm}
+                        password={true}/>
 
-                    {/*设置*/}
-                    <View style={styles.settingStyle}>
-                        <Button size="small" type="primary" onPress={()=>props.navigation.navigate('Register')}>忘记密码</Button>
-                        {/* <Text>忘记密码</Text> */}
-                        <Button size="small" type="primary" onPress={()=>props.navigation.navigate('Register')}>注册</Button>
-                        {/* <Text>注册</Text> */}
-                    </View>
+                        <TextInput
+                        style={styles.textInputStyle}
+                        placeholder='请输入邮箱'
+                        onChangeText={text => setEmail(text)}
+                        value={email}
+                        />
+                    <Button  type="primary" style={styles.loginBtnStyle} onPress={() => {
+                        register(name,password,password_confirm,email,(data)=>{
+                            Toast.removeAll();
+                            if(data){
+                                // signUp();//用了signup后会修改状态 导致login不在stack中 只能直接跳到home
+                                // 必须让后端在注册的同时记录session
+                                Toast.success("注册成功",1);
+                                props.navigation.navigate('Login');
+                            }else{
+                                Toast.fail("用户名或邮箱已被注册",1);
+                            }
+                        });
+                    }}>
+                        注册
+                    </Button>
 
                 </View>
             </View>
@@ -103,7 +94,7 @@ const styles = StyleSheet.create({
     loginBtnStyle: {
         width: width*0.9,
         height: 40,
-        // backgroundColor:'blue',
+        backgroundColor:'blue',
         marginTop:30,
         marginBottom: 20,
         borderRadius:10
