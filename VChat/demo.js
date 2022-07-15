@@ -223,6 +223,7 @@ function Demo() {
                 addFriend(friendName,(data)=>{
                     if(data){
                       Toast.success("添加成功",1);
+                      getFriends((data)=>setFriends(data));
                     }else{
                       Toast.fail("不存在此用户",1);
                     }
