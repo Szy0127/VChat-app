@@ -48,6 +48,7 @@
     "react-native-tcp": "^3.2.1",
     "react-native-udp": "^2.1.0",
     "react-native-webrtc": "^1.100.1",
+    "react-navigation": "^4.4.4",
     "readable-stream": "1.0.33",
     "simple-peer": "^9.11.1",
     "socket.io": "^4.5.1",

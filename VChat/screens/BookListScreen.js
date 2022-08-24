@@ -5,7 +5,7 @@ import React from 'react';
 import {View,Text,AsyncStorage,ActivityIndicator, FlatList, Image,StyleSheet,TouchableHighlight} from 'react-native';
 import {SearchBar} from '../components/SearchBar';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import {apiUrl} from '../urlconfig';
+import { apiUrl } from '../service/urlConfig';
 const styles = StyleSheet.create({
     container: {
         flex: 1,

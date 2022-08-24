@@ -35,7 +35,16 @@ function fetchData({name,password,signIn}) {
             isSuccess=(responseData.success?true:false);
             Toast.removeAll();
             if(isSuccess){
-                signIn()
+                signIn();
+                let _storeName = async () => {
+                    try {
+                        await AsyncStorage.setItem("username",responseData.data.username);
+                    } catch (error) {
+                        // Error saving data
+                    }
+                };
+                _storeName();
+
             }else{
                 Alert.alert("用户名或密码错误！");
             }

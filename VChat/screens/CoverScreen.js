@@ -41,8 +41,8 @@ const CoverScreen = (props) => {
                     <TimeCounter/>
                 </View>
             <View style={{...styles.center,flex:2}}>
-                <Button size='large' type="primary" onPress={()=>props.navigation.navigate('Demo')}>demo</Button>
-                <Button size='large' type="primary" onPress={()=>props.navigation.navigate('Webrtc')}>webrtc</Button>
+                <Button size='large' type="primary" onPress={()=>props.navigation.navigate('demo')}>demo</Button>
+                {/* <Button size='large' type="primary" onPress={()=>props.navigation.navigate('Webrtc')}>webrtc</Button> */}
                 </View>
     </SafeAreaView>;
 };

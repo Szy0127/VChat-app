@@ -1,4 +1,5 @@
 
 import React from "react";
 const AuthContext = React.createContext();
-export {AuthContext};
+const SocketContext = React.createContext();
+export {AuthContext,SocketContext};

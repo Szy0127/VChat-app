@@ -1,5 +1,5 @@
 
-import { apiUrl } from "../urlconfig";
+import { apiUrl } from "./urlConfig";
 import { Alert } from "react-native";
 import { postRequest,postRequest_v2 } from "./utils";
 import { Toast } from "@ant-design/react-native";

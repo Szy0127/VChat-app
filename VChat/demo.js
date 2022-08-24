@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState,useContext } from 'react'
+import React, { useEffect, useRef, useState,useContext,useReducer } from 'react'
 import io from 'socket.io-client'
 import { Button,Toast } from '@ant-design/react-native'
 import { Text,TextInput ,View,StyleSheet,FlatList} from 'react-native'
@@ -13,13 +13,13 @@ import {
   registerGlobals
 } from 'react-native-webrtc';
 import Peer from 'simple-peer';
-
+import {withNavigation} from 'react-navigation';
 import { nodeServerUrl } from './urlconfig';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 
 import { getFriends, getSocketIDByUserID, updateSocketID,logout,addFriend } from './service/userService';
-import { AuthContext } from './context';
+import { AuthContext,SocketContext } from './context';
 /*
 
 
@@ -30,23 +30,54 @@ https://github.com/react-native-webrtc/react-native-webrtc/issues/1159
 */
 //console.log(new RTCPeerConnection().addStream);
 
-const socket = io.connect(nodeServerUrl);
-
-
-
-const MyMediaStream = {
-  video: true,
-  audio: true
+const State = {
+  asking: false,
+  asked: false,
+  on: false,
 }
-function Demo() {
-  const [stream, setStream] = useState(null);
+
+const Dispatch = (prevState, type) => {
+  switch (type) {
+      case 'asking':
+          return {
+              ...prevState,
+              asking: true,
+          };
+      case 'asked':
+          return {
+              ...prevState,
+              asked: true,
+          };
+      case 'accepted':
+          return {
+              ...prevState,
+              on: true
+          };
+      case 'reset':
+          return {
+              ...State
+          }
+  }
+}
+
+
+
+
+
+
+function Demo(props) {
+
+
+  const {socket,stream} = useContext(SocketContext);
+
   const [otherStream, setOtherStream] = useState(null);
+  const [opposite,setOpposite] = useState('');
   const myVideo = useRef();
   const [me, setMe] = useState('');
   const [idtoCall, setidtoCall] = useState('');
   const [callAccepted, setCallAccepted] = useState(false);
   const [receivingCall, setReceivingCall] = useState(false);
-  const [callerSignal, setCallerSignal] = useState(null);
+
   const [caller, setCaller] = useState('');
   const [callEnded, setCallEnded] = useState(false);
   const userVideo = useRef();
@@ -60,39 +91,24 @@ function Demo() {
 
   const { signOut } = useContext(AuthContext);
 
-  
+  const [songName, setSongName] = useState('');
+  const [songUrl, setSongUrl] = useState('');
 
-  const start_stream = async () => {
-    console.log('start');
-    if (!stream) {
-      let s;
-      try {
-        s = await mediaDevices.getUserMedia(MyMediaStream);
-        setStream(s);
-      } catch(e) {
-        console.error(e);
-      }
-    }
-  };
-  useEffect(() => {
-    getFriends((data)=>setFriends(data));
-    start_stream();
-    socket.on('me', (id) => {
-      setMe(id);
-      console.log("in");
-      console.log(id);
-      updateSocketID(id);
-    })
-    socket.on('callUsr', (data) => {
-      console.log("incallUsr");
-      setReceivingCall(true);
-      setCaller(data.from);
-      setCallerSignal(data.signal);
-      //setState 不会马上变 所以这里调answer会null
-    })
-  }, [])
+  const [gobangState, gobangDispatcher] = useReducer(
+      Dispatch,
+      State
+  );
+  const [songState, songDispatcher] = useReducer(
+      Dispatch,
+      State
+  );
+
+
+
   //呼叫
-  const callusr = (idtoCall) => {
+  const callusr = async (idtoCall) => {
+    const addr = await getIPRegion();
+    console.log('ip addr:', addr);
     setInConversation(true);
     console.log(idtoCall);
     //对等连接
@@ -116,14 +132,25 @@ function Demo() {
       //_pc = _wrtc.RTCPeerConnection()
     peer._pc.addStream(stream);
     // 向对等连接传送数据
+    let username;
+    try {
+        username = await AsyncStorage.getItem('username');
+    } catch (e) {
+        // Restoring token failed
+    }
+    console.log(username);
+
     peer.on('signal', (data) => {
-      console.log("inSignal");
       socket.emit('callUsr', {
-        usrtoCall: idtoCall,
-        signalData: data,
-        from: me,
+          usrtoCall: id2call,
+          signalData: data,
+          from: {
+              socketID: socket.id,
+              username,
+              addr
+          }
       })
-    })
+  })
     //接受返回的answer
     //似乎react-native 不支持 peer.on('stream')
 
@@ -132,19 +159,23 @@ function Demo() {
     })
     //接受answer
     socket.on('callAccepted', (signal) => {
-      //console.log(signal);
+      console.log('in callAccepted', id2call);
       setCallAccepted(true);
       peer.signal(signal);
-    })
+      socket.emit("callAccepted3", id2call);
+  })
     //存储peer
     connectionRef.current = peer;
   }
 
   //接听视频流
-  const answerCall = () => {
-    setInConversation(true);
+  const answerCall = (callerInfo,callerSignal) => {
     console.log("answerCall");
-    setCallAccepted(true);
+    socket.on('callAccepted3', () => {
+      setCallAccepted(true);
+      setInConversation(true);
+  })
+  console.log(1);
     const peer = new Peer(
       {initiator: false,
         trickle: false, 
@@ -159,56 +190,113 @@ function Demo() {
         registerGlobals
         },
       });
+      console.log(2);
       peer._pc.addStream(stream);
+      console.log(3);
+
     peer.on('signal', (data) => {
-      console.log("inAnswerCallSignal");
       socket.emit('answerCall', {
-        signalData: data,
-        to: caller,
+          signalData: data,
+          to: callerInfo.socketID,
       })
-    });
+  });
+
+    console.log(4);
 
     peer._pc.addEventListener('addstream',event=>{
       setOtherStream(event.stream);
     })
+    console.log(peer);
     peer.signal(callerSignal);
+    console.log(6);
     connectionRef.current = peer;
+    console.log("answer call finish");
   }
   const endcall = () => {
     setCallEnded(true);
     connectionRef.current.destory();
   }
 
-  console.log("fresh");
-  console.log(friends);
-  //RTCView外面如果还有View则不能正常显示
-  const call_onPress = (callID)=>{
-      // console.log(callID);
-      getSocketIDByUserID(callID,
-        (data)=>{
-          if(data.length>0){
-              callusr(data);
-          }else{
-            alert("好友不在线");
-          }
-        }
-        )
-  }
-  const renderItem = ({item})=>{
-    return   (
-    <View style={styles.row}>
-        <View style={{...styles.column,flex:5}}><Text style={{...styles.text}}>{item.username}</Text></View>
-        <View style={{...styles.column,flex:3}}><Button onPress={()=>call_onPress(item.userID)}>视频通话</Button></View>
-    </View>    
-  );
-  }
+
+  // //RTCView外面如果还有View则不能正常显示
+  // const call_onPress = (callID)=>{
+  //     // console.log(callID);
+  //     getSocketIDByUserID(callID,
+  //       (data)=>{
+  //         if(data.length>0){
+  //             callusr(data);
+  //         }else{
+  //           alert("好友不在线");
+  //         }
+  //       }
+  //       )
+  // }
+  // const renderItem = ({item})=>{
+  //   return   (
+  //   <View style={styles.row}>
+  //       <View style={{...styles.column,flex:5}}><Text style={{...styles.text}}>{item.username}</Text></View>
+  //       <View style={{...styles.column,flex:3}}><Button onPress={()=>call_onPress(item.userID)}>视频通话</Button></View>
+  //   </View>    
+  // );
+  // }
+
+  useEffect(() => {
+    // getFriends((data)=>setFriends(data));
+
+      const startPeer = async ()=>{
+        // console.log("type:",props.navigation.getParam('type',''));
+        let message = props.navigation.getState().routes[1].params;
+        console.log(message.type,message.callerInfo);
+        if (message.type === 'caller') {
+                  setOpposite(message.calleeSocketID);
+                  await callusr(message.calleeSocketID);
+                  console.log("callusr finish");
+              } else {
+                  setOpposite(message.callerInfo.socketID);
+                  answerCall(message.callerInfo, message.callerSignal);
+              }
+
+      }
+      startPeer();
+
+  socket.on('launchGobang', (data) => {
+      // setAskGobang(true);
+      gobangDispatcher("asked");
+  });
+  socket.on('acceptGobang', (data) => {
+      // setGobangOn(true);
+      gobangDispatcher("accepted");
+  })
+
+  socket.on('launchSong', (data) => {
+      setSongName(data.songName);
+      setSongUrl(data.songUrl);
+      songDispatcher("asked");
+  });
+  socket.on('launchSongError', () => {
+      songDispatcher("reset");
+      alert("查找歌曲失败");
+  });
+
+  socket.on('acceptSong', (data) => {
+      // setGobangOn(true);
+      if (data.songUrl === "") {
+          alert("找不到此歌曲")
+          return;
+      }
+      setSongUrl(data.songUrl);
+      playMusic(data.songUrl);
+      songDispatcher("accepted");
+  })
+}, []);
+
   return (
     <SafeAreaView style={styles.body}>
       <Button onPress={()=>{
         logout();
         signOut();
       }}>退出</Button>
-      {
+      {/* {
         !inConversation &&
         (
           <View>
@@ -237,7 +325,7 @@ function Demo() {
               />
         </View>
         )
-      }
+      } */}
 
           {stream &&
               <RTCView
