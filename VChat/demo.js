@@ -17,7 +17,7 @@ import {withNavigation} from 'react-navigation';
 import { nodeServerUrl } from './urlconfig';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
-
+import { getIPRegion } from './service/ipService';
 import { getFriends, getSocketIDByUserID, updateSocketID,logout,addFriend } from './service/userService';
 import { AuthContext,SocketContext } from './context';
 /*
@@ -231,14 +231,7 @@ function Demo(props) {
   //       }
   //       )
   // }
-  // const renderItem = ({item})=>{
-  //   return   (
-  //   <View style={styles.row}>
-  //       <View style={{...styles.column,flex:5}}><Text style={{...styles.text}}>{item.username}</Text></View>
-  //       <View style={{...styles.column,flex:3}}><Button onPress={()=>call_onPress(item.userID)}>视频通话</Button></View>
-  //   </View>    
-  // );
-  // }
+
 
   useEffect(() => {
     // getFriends((data)=>setFriends(data));
@@ -246,7 +239,6 @@ function Demo(props) {
       const startPeer = async ()=>{
         // console.log("type:",props.navigation.getParam('type',''));
         let message = props.navigation.getState().routes[1].params;
-        console.log(message.type,message.callerInfo);
         if (message.type === 'caller') {
                   setOpposite(message.calleeSocketID);
                   await callusr(message.calleeSocketID);

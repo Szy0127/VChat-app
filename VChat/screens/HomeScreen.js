@@ -17,6 +17,7 @@ import { io } from 'socket.io-client';
 import { SocketContext } from '../context';
 import { SafeAreaView } from 'react-navigation';
 import { MediaStream,mediaDevices } from 'react-native-webrtc';
+import FriendList from '../components/friendList';
 const Stack = createStackNavigator();
 function BookListAndDetail(){
     return (
@@ -137,6 +138,11 @@ export function HomeScreen(props){
         );
 
     }
+
+    const gotoFriends = ()=>{
+        props.navigation.navigate('friends');
+        console.log("goto friends");
+    }
     
 
 
@@ -144,18 +150,27 @@ export function HomeScreen(props){
 
 
         <SocketContext.Provider value={{socket,stream}}>
-            <Stack.Navigator initialRouteName="Home">
-            
-                
+            {/* <FriendList navigation={props.navigation} aaa={1}/> */}
+            <Stack.Navigator initialRouteName="Home">        
                 <Stack.Screen name='Home' options={{headerShown:false}}>
                     {()=>{
-                        return receivingCall ?
+                        return <SafeAreaView>
+                            <View>
+                        {receivingCall ?
                         <>
                             <Text>{`${callerInfo.username}(${callerInfo.addr.region})`}正在呼叫</Text>
                             <Button onPress={answerCall}>接听</Button>
                         </>
                         :
-                         <Text>等待呼叫</Text>
+                         <Text>等待呼叫</Text>}
+                         <FriendList navigation={props.navigation}/>
+                        {/* <Button onPress={gotoFriends}>好友列表</Button> */}
+                         </View>
+                         {/* <Stack.Navigator initialRouteName="friends">
+                            <Stack.Screen name="friends" component={FriendList} options={{headerShown:false}}/>
+                         </Stack.Navigator> */}
+                        
+                         </SafeAreaView>
                     }}
                     </Stack.Screen>
                 
