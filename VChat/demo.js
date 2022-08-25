@@ -20,6 +20,7 @@ import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { getIPRegion } from './service/ipService';
 import { getFriends, getSocketIDByUserID, updateSocketID,logout,addFriend } from './service/userService';
 import { AuthContext,SocketContext } from './context';
+import AsyncStorage from '@react-native-community/async-storage';
 /*
 
 
@@ -136,13 +137,13 @@ function Demo(props) {
     try {
         username = await AsyncStorage.getItem('username');
     } catch (e) {
-        // Restoring token failed
+        console.log(e);
     }
-    console.log(username);
+    console.log("username:",username);
 
     peer.on('signal', (data) => {
       socket.emit('callUsr', {
-          usrtoCall: id2call,
+          usrtoCall: idtoCall,
           signalData: data,
           from: {
               socketID: socket.id,
@@ -159,10 +160,10 @@ function Demo(props) {
     })
     //接受answer
     socket.on('callAccepted', (signal) => {
-      console.log('in callAccepted', id2call);
+      console.log('in callAccepted', idtoCall);
       setCallAccepted(true);
       peer.signal(signal);
-      socket.emit("callAccepted3", id2call);
+      socket.emit("callAccepted3", idtoCall);
   })
     //存储peer
     connectionRef.current = peer;

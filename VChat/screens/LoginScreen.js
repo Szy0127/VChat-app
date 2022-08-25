@@ -36,11 +36,13 @@ function fetchData({name,password,signIn}) {
             Toast.removeAll();
             if(isSuccess){
                 signIn();
+                console.log(responseData.data.username);
                 let _storeName = async () => {
                     try {
                         await AsyncStorage.setItem("username",responseData.data.username);
                     } catch (error) {
                         // Error saving data
+                        console.log("save username error");
                     }
                 };
                 _storeName();
