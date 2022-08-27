@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState,useContext,useReducer } from 'react'
-import io from 'socket.io-client'
 import { Button,Toast } from '@ant-design/react-native'
 import { Text,TextInput ,View,StyleSheet,FlatList} from 'react-native'
 import {
@@ -105,18 +104,12 @@ function ChatScreen(props) {
       State
   );
 
+  const timeout = useRef();
 
 
-  const checkAccepted = ()=>{
-    console.log(callAccepted);
-    if(!callAccepted){
-      console.log("对方未接听或网络不畅");
-      props.navigation.navigate('Home');
-    }
-  }
+
   //呼叫
   const callusr = async (idtoCall) => {
-    setTimeout(checkAccepted,wait_for);
     const addr = await getIPRegion();
     console.log('ip addr:', addr);
     setInConversation(true);
@@ -173,6 +166,7 @@ function ChatScreen(props) {
       setCallAccepted(true);
       peer.signal(signal);
       socket.emit("callAccepted3", idtoCall);
+      clearTimeout(timeout.current);
   })
     //存储peer
     connectionRef.current = peer;
@@ -181,12 +175,12 @@ function ChatScreen(props) {
   //接听视频流
   const answerCall = (callerInfo,callerSignal) => {
     console.log("answerCall");
-    setTimeout(checkAccepted,wait_for);
     socket.on('callAccepted3', () => {
 
       setCallAccepted(true);
       setInConversation(true);
       console.log("call accepted");
+      clearTimeout(timeout.current);
     })
   console.log(1);
     const peer = new Peer(
@@ -248,7 +242,10 @@ function ChatScreen(props) {
 
   useEffect(() => {
     // getFriends((data)=>setFriends(data));
-
+      timeout.current = setTimeout(()=>{
+            console.log("对方未接听或网络不畅");
+            props.navigation.navigate('Home');
+      },wait_for);
       const startPeer = async ()=>{
         // console.log("type:",props.navigation.getParam('type',''));
         let message = props.navigation.getState().routes[1].params;
