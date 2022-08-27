@@ -18,7 +18,7 @@ import { nodeServerUrl } from './urlconfig';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { getIPRegion } from './service/ipService';
-import { getFriends, getSocketIDByUserID, updateSocketID,logout,addFriend } from './service/userService';
+import { getFriends, getSocketIDByUserID, updateSocketID,logout,addFriend, wait_for } from './service/userService';
 import { AuthContext,SocketContext } from './context';
 import AsyncStorage from '@react-native-community/async-storage';
 /*
@@ -106,8 +106,15 @@ function Demo(props) {
 
 
 
+  const checkAccepted = ()=>{
+    if(!callAccepted){
+      console.log("对方未接听或网络不畅");
+      props.navigation.navigate('Home');
+    }
+  }
   //呼叫
   const callusr = async (idtoCall) => {
+    setTimeout(checkAccepted,wait_for);
     const addr = await getIPRegion();
     console.log('ip addr:', addr);
     setInConversation(true);
@@ -172,6 +179,7 @@ function Demo(props) {
   //接听视频流
   const answerCall = (callerInfo,callerSignal) => {
     console.log("answerCall");
+    setTimeout(checkAccepted,wait_for);
     socket.on('callAccepted3', () => {
       setCallAccepted(true);
       setInConversation(true);
