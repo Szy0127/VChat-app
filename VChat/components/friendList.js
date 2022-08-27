@@ -5,8 +5,8 @@ import React from 'react';
 
 // import {history} from "../../utils/history";
 
-import { addFriend } from "../service/userService";
-import { getFriends,getSocketIDByUserID } from "../service/userService";
+import { addFriend } from "../services/userService";
+import { getFriends,getSocketIDByUserID } from "../services/userService";
 import { StyleSheet } from "react-native";
 import { Colors } from "react-native/Libraries/NewAppScreen";
 import { View,FlatList,Text } from "react-native";

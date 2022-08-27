@@ -10,7 +10,7 @@ import {LoginScreen} from "./screens/LoginScreen";
 import {HomeScreen} from "./screens/HomeScreen";
 import {SplashScreen} from "./components/splash";
 import {AuthContext} from "./context";
-import { checkSession } from './service/userService';
+import { checkSession } from './services/userService';
 import { RegisterScreen } from './screens/RegisterScreen';
 const Stack = createStackNavigator();
 

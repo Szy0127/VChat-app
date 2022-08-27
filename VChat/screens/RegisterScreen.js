@@ -10,8 +10,8 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import {AuthContext} from "../context";
-import {loading} from "../util/utils.js";
-import {register} from "../service/userService";
+import {loading} from "../utils/utils.js";
+import {register} from "../services/userService";
 import { Toast,Button } from '@ant-design/react-native';
 // 获取屏幕的宽和高
 let {width,height} = Dimensions.get('window');

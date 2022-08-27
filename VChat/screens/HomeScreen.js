@@ -9,15 +9,16 @@ import {BookScreen} from './BookScreen';
 import {BookListScreen} from "./BookListScreen"
 import { SafeAreaProvider} from 'react-native-safe-area-context';
 import { Button,Modal} from '@ant-design/react-native';
-import Demo from '../demo';
+import ChatScreen from './ChatScreen';
 import { useState,useEffect } from 'react';
-import { updateSocketID } from '../service/userService';
-import { nodeServerUrl } from '../service/urlConfig';
+import { updateSocketID } from '../services/userService';
+import { nodeServerUrl } from '../configs/urlConfig';
 import { io } from 'socket.io-client';
 import { SocketContext } from '../context';
 import { SafeAreaView } from 'react-navigation';
 import { MediaStream,mediaDevices } from 'react-native-webrtc';
 import FriendList from '../components/friendList';
+import { openCamera } from '../configs/cameraConfig';
 
 const Stack = createStackNavigator();
 function BookListAndDetail(){
@@ -56,8 +57,7 @@ function MyProfileScreen({navigation}) {
     );
 }
 
-
-            
+     
 
 export function HomeScreen(props){
 
@@ -77,10 +77,7 @@ export function HomeScreen(props){
                 console.log('start');
                   let s;
                   try {
-                    s = await mediaDevices.getUserMedia({
-                        video: true,
-                        audio: true
-                      });
+                    s = await openCamera();
                     setStream(s);
                     console.log("set stream success");
                     return s;
@@ -172,7 +169,7 @@ export function HomeScreen(props){
                     }}
                     </Stack.Screen>
                 
-                <Stack.Screen name="chatting" component={Demo} options={{headerShown:false}}/>
+                <Stack.Screen name="chatting" component={ChatScreen} options={{headerShown:false}}/>
             </Stack.Navigator>
             </SocketContext.Provider>
 

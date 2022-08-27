@@ -1,4 +1,4 @@
-let postRequest_v2 = (url, data, callback) => {
+export const postRequest_v2 = (url, data, callback) => {
     let formData = new FormData();
 
     for (let p in data){
@@ -15,7 +15,7 @@ let postRequest_v2 = (url, data, callback) => {
 
     fetch(url,opts)
         .then((response) => {
-            // console.log(response)
+            console.log(response)
             return response.json()
         })
         .then((data) => {
@@ -27,7 +27,7 @@ let postRequest_v2 = (url, data, callback) => {
         });
 };
 
-let postRequest = (url, json, callback) => {
+export const postRequest = (url, json, callback) => {
 
     let opts = {
         method: "POST",
@@ -51,4 +51,16 @@ let postRequest = (url, json, callback) => {
         });
 };
 
-export {postRequest,postRequest_v2};
+export const postRequest_v3 = async (url, json) => {
+    let opts = {
+        method: "POST",
+        body: JSON.stringify(json),
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        credentials: "include"
+    };
+
+    const response = await fetch(url, opts);
+    return await response.json();
+}

@@ -17,9 +17,10 @@ import {withNavigation} from 'react-navigation';
 import { nodeServerUrl } from './urlconfig';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
-import { getIPRegion } from './service/ipService';
-import { getFriends, getSocketIDByUserID, updateSocketID,logout,addFriend, wait_for } from './service/userService';
-import { AuthContext,SocketContext } from './context';
+import { getIPRegion } from '../services/ipService';
+import { getFriends, getSocketIDByUserID, updateSocketID,logout,addFriend } from '../services/userService';
+import { wait_for } from '../configs/constantConfig';
+import { AuthContext,SocketContext } from '../context';
 import AsyncStorage from '@react-native-community/async-storage';
 /*
 
@@ -66,7 +67,7 @@ const Dispatch = (prevState, type) => {
 
 
 
-function Demo(props) {
+function ChatScreen(props) {
 
 
   const {socket,stream} = useContext(SocketContext);
@@ -107,6 +108,7 @@ function Demo(props) {
 
 
   const checkAccepted = ()=>{
+    console.log(callAccepted);
     if(!callAccepted){
       console.log("对方未接听或网络不畅");
       props.navigation.navigate('Home');
@@ -181,9 +183,11 @@ function Demo(props) {
     console.log("answerCall");
     setTimeout(checkAccepted,wait_for);
     socket.on('callAccepted3', () => {
+
       setCallAccepted(true);
       setInConversation(true);
-  })
+      console.log("call accepted");
+    })
   console.log(1);
     const peer = new Peer(
       {initiator: false,
@@ -406,4 +410,4 @@ const styles = StyleSheet.create({
     right: 0
   },
 });
-export default Demo;
+export default ChatScreen;
