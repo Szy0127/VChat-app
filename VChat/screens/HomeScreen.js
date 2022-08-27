@@ -8,7 +8,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import {BookScreen} from './BookScreen';
 import {BookListScreen} from "./BookListScreen"
 import { SafeAreaProvider} from 'react-native-safe-area-context';
-import { Button } from '@ant-design/react-native';
+import { Button,Modal} from '@ant-design/react-native';
 import Demo from '../demo';
 import { useState,useEffect } from 'react';
 import { updateSocketID } from '../service/userService';
@@ -18,6 +18,7 @@ import { SocketContext } from '../context';
 import { SafeAreaView } from 'react-navigation';
 import { MediaStream,mediaDevices } from 'react-native-webrtc';
 import FriendList from '../components/friendList';
+
 const Stack = createStackNavigator();
 function BookListAndDetail(){
     return (
@@ -55,23 +56,14 @@ function MyProfileScreen({navigation}) {
     );
 }
 
-const HomeScreen_ = (props)=>{
-    return             props.receivingCall ?
-                        <>
-                            <Text>{`${props.callerInfo.username}(${props.callerInfo.addr.region})`}正在呼叫</Text>
-                            <Button onPress={props.answerCall}>接听</Button>
-                        </>
-                        :
-                        <Text>等待呼叫</Text>
-                    
 
             
-}
+
 export function HomeScreen(props){
 
-    const [receivingCall, setReceivingCall] = useState(false);
-    const [callerInfo, setCallerInfo] = useState('');
-    const [callerSignal, setCallerSignal] = useState('');
+    // const [receivingCall, setReceivingCall] = useState(false);
+    // const [callerInfo, setCallerInfo] = useState('');
+    // const [callerSignal, setCallerSignal] = useState('');
 
     const [socket, setSocket] = useState(null);
     const [stream,setStream] = useState(new MediaStream());
@@ -111,10 +103,24 @@ export function HomeScreen(props){
 
             _socket.on('callUsr', (data) => {
                 console.log("incallUsr");
-                setCallerSignal(data.signal);
-                setCallerInfo(data.from);
-                setReceivingCall(true);
+                let callerSignal = data.signal;
+                let callerInfo = data.from;
+                // setCallerSignal(data.signal);
+                // setCallerInfo(data.from);
+                // setReceivingCall(true);
                 console.log(data.from);
+                Modal.alert("视频邀请",`${callerInfo.username}(${callerInfo.addr.region})正在呼叫`,[
+                    {
+                        text:'接听',
+                        onPress:()=>answerCall(callerSignal,callerInfo),
+                    },
+                    {
+                        text:'拒绝',
+                        onPress:()=>{console.log("拒绝")},
+                        style:'cancel'
+                    }
+                ]);
+
             });
         }
         , []
@@ -123,11 +129,11 @@ export function HomeScreen(props){
 
 
 
-    const answerCall = () => {
-        if (callerInfo == '' || callerSignal == '') {
-            alert("请稍后重试");
-            return;
-        }
+    const answerCall = (callerSignal,callerInfo) => {
+        // if (callerInfo == '' || callerSignal == '') {
+        //     alert("请稍后重试");
+        //     return;
+        // }
 
         props.navigation.navigate('chatting', 
              {
@@ -145,7 +151,6 @@ export function HomeScreen(props){
     }
     
 
-
     return (
 
 
@@ -156,13 +161,6 @@ export function HomeScreen(props){
                     {()=>{
                         return <SafeAreaView>
                             <View>
-                        {receivingCall ?
-                        <>
-                            <Text>{`${callerInfo.username}(${callerInfo.addr.region})`}正在呼叫</Text>
-                            <Button onPress={answerCall}>接听</Button>
-                        </>
-                        :
-                         <Text>等待呼叫</Text>}
                          <FriendList navigation={props.navigation}/>
                         {/* <Button onPress={gotoFriends}>好友列表</Button> */}
                          </View>
