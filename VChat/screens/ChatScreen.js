@@ -90,6 +90,8 @@ function ChatScreen(props) {
 
   const [friends,setFriends] = useState([]);
 
+  const [quit,setQuit] = useState(false);
+
   const { signOut } = useContext(AuthContext);
 
   const [songName, setSongName] = useState('');
@@ -105,6 +107,8 @@ function ChatScreen(props) {
   );
 
   const timeout = useRef();
+
+
 
 
 
@@ -162,6 +166,10 @@ function ChatScreen(props) {
     })
     //接受answer
     socket.on('callAccepted', (signal) => {
+      console.log("")
+      if(quit){
+        return;
+      }
       console.log('in callAccepted', idtoCall);
       setCallAccepted(true);
       peer.signal(signal);
@@ -243,8 +251,9 @@ function ChatScreen(props) {
   useEffect(() => {
     // getFriends((data)=>setFriends(data));
       timeout.current = setTimeout(()=>{
+            setQuit(true);
             console.log("对方未接听或网络不畅");
-            props.navigation.navigate('Home');
+            props.navigation.navigate('Tab');
       },wait_for);
       const startPeer = async ()=>{
         // console.log("type:",props.navigation.getParam('type',''));

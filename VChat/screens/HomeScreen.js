@@ -19,45 +19,91 @@ import { SafeAreaView } from 'react-navigation';
 import { MediaStream,mediaDevices } from 'react-native-webrtc';
 import FriendList from '../components/friendList';
 import { openCamera } from '../configs/cameraConfig';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { FriendScreen } from './FriendScreen';
+import { MessageScreen } from './MessageScreen';
+import { ChatroomScreen } from './ChatroomScreen';
+import { ProfileScreen } from './ProfileScreen';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+// function BookListAndDetail(){
+//     return (
+//         <SafeAreaProvider>
+//         <Stack.Navigator>
+//             <Stack.Screen name="BookList" component={BookListScreen} options={{headerShown:false}}/>
+//             <Stack.Screen name="Detail" component={BookScreen}/>
+//         </Stack.Navigator>
+//             </SafeAreaProvider>
+//     );
+// }
+// function MyCartScreen({ navigation }) {
+//     return (
+//         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+//             <Text>My Cart</Text>
+//             <Button size='large' type="primary" onPress={()=>navigation.navigate('demo')}>demo</Button>
+//         </View>
+//     );
+// }
 
+// function MyOrderScreen({navigation}) {
+//     return (
+//         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+//             <Text>My Order</Text>
+//             <Button onPress={()=>{console.log(1);}}>test</Button>
+//         </View>
+//     );
+// }
+
+// function MyProfileScreen({navigation}) {
+//     return (
+//         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+//             <Profile navigation={navigation}/>
+//         </View>
+//     );
+// }
+const Tab = createBottomTabNavigator();
+
+const MyTabNavigator = (props)=>{
+    return (
+    <Tab.Navigator initialRouteName='Message'>      
+        <Tab.Screen name='Message' component={MessageScreen} 
+            options={{
+                headerShown:false,
+                tabBarLabel:'消息',
+                tabBarIcon: ({ color, size }) => (
+                    <AntDesign name="message1" color={color} size={size} />
+                  ),
+                }}/>  
+        <Tab.Screen name='Friendlist' component={FriendScreen} 
+            options={{
+                headerShown:false,
+                tabBarLabel:'好友',
+                tabBarIcon: ({ color, size }) => (
+                    <AntDesign name="contacts" color={color} size={size} />
+                  ),
+                }}/>
+        <Tab.Screen name='Chatroom' component={ChatroomScreen} 
+            options={{
+                headerShown:false,
+                tabBarLabel:'多人',
+                tabBarIcon: ({ color, size }) => (
+                    <FontAwesome5 name="user-friends" color={color} size={size} />
+                  ),
+                }}/>
+        <Tab.Screen name='Profile' component={ProfileScreen} 
+            options={{
+                headerShown:false,
+                tabBarLabel: '我的',
+                tabBarIcon: ({ color, size }) => (
+                  <MaterialCommunityIcons name="account" color={color} size={size} />
+                ),
+              }}
+        />
+    </Tab.Navigator>
+    )
+}
 const Stack = createStackNavigator();
-function BookListAndDetail(){
-    return (
-        <SafeAreaProvider>
-        <Stack.Navigator>
-            <Stack.Screen name="BookList" component={BookListScreen} options={{headerShown:false}}/>
-            <Stack.Screen name="Detail" component={BookScreen}/>
-        </Stack.Navigator>
-            </SafeAreaProvider>
-    );
-}
-function MyCartScreen({ navigation }) {
-    return (
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-            <Text>My Cart</Text>
-            <Button size='large' type="primary" onPress={()=>navigation.navigate('demo')}>demo</Button>
-        </View>
-    );
-}
-
-function MyOrderScreen({navigation}) {
-    return (
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-            <Text>My Order</Text>
-            <Button onPress={()=>{console.log(1);}}>test</Button>
-        </View>
-    );
-}
-
-function MyProfileScreen({navigation}) {
-    return (
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-            <Profile navigation={navigation}/>
-        </View>
-    );
-}
-
-     
 
 export function HomeScreen(props){
 
@@ -152,26 +198,11 @@ export function HomeScreen(props){
 
 
         <SocketContext.Provider value={{socket,stream}}>
-            {/* <FriendList navigation={props.navigation} aaa={1}/> */}
-            <Stack.Navigator initialRouteName="Home">        
-                <Stack.Screen name='Home' options={{headerShown:false}}>
-                    {()=>{
-                        return <SafeAreaView>
-                            <View>
-                         <FriendList navigation={props.navigation}/>
-                        {/* <Button onPress={gotoFriends}>好友列表</Button> */}
-                         </View>
-                         {/* <Stack.Navigator initialRouteName="friends">
-                            <Stack.Screen name="friends" component={FriendList} options={{headerShown:false}}/>
-                         </Stack.Navigator> */}
-                        
-                         </SafeAreaView>
-                    }}
-                    </Stack.Screen>
-                
+            <Stack.Navigator initialRouteName='Tab'>
+                <Stack.Screen name="Tab" component={MyTabNavigator} options={{headerShown:false}}/>
                 <Stack.Screen name="chatting" component={ChatScreen} options={{headerShown:false}}/>
             </Stack.Navigator>
-            </SocketContext.Provider>
+        </SocketContext.Provider>
 
     );
 }
