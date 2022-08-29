@@ -21,6 +21,7 @@ import { getFriends, getSocketIDByUserID, updateSocketID,logout,addFriend } from
 import { wait_for } from '../configs/constantConfig';
 import { AuthContext,SocketContext } from '../context';
 import AsyncStorage from '@react-native-community/async-storage';
+import { configure } from '../configs/iceServerConfig';
 /*
 
 
@@ -122,6 +123,7 @@ function ChatScreen(props) {
     const peer = new Peer(
       {initiator: true,
         trickle: false, 
+        config:configure,
        wrtc: { 
         RTCPeerConnection,
         RTCIceCandidate,
@@ -194,6 +196,7 @@ function ChatScreen(props) {
     const peer = new Peer(
       {initiator: false,
         trickle: false, 
+        config:configure,
        wrtc: { 
         RTCPeerConnection,
         RTCIceCandidate,
@@ -302,17 +305,59 @@ function ChatScreen(props) {
   })
 }, []);
 
+const launchGobang = () => {
+  if (opposite.length == 0) {
+      alert("请先发起通话");
+      return;
+  }
+  socket.emit('launchGobang', { to: opposite });
+  gobangDispatcher("asking");
+}
+const acceptGobang = () => {
+  if (!gobangState.asked) {
+      alert("未接受到请求");
+  }
+  socket.emit('acceptGobang', { to: opposite });
+  // setGobangOn(true);
+  gobangDispatcher("accepted");
+}
+
+const launchSong = () => {
+  if (opposite.length == 0) {
+      alert("请先发起通话");
+      return;
+  }
+  if (songName.length == 0) {
+      alert("请输入歌名");
+      return;
+  }
+  socket.emit('launchSong', { to: opposite, from: socket.id, songName });
+  songDispatcher("asking");
+}
+const acceptSong = () => {
+  if (!songState.asked) {
+      alert("未接受到请求");
+      return;
+  }
+  if (songUrl === "") {
+      alert("无音乐链接")
+      return;
+  }
+  socket.emit('acceptSong', { to: opposite, songUrl: songUrl });
+
+  playMusic(songUrl);
+  songDispatcher("accepted");
+}
+
+
   return (
     <SafeAreaView style={styles.body}>
-      <Button onPress={()=>{
-        props.navigation.navigate('home');
-      }}>结束通话</Button>
       {/* {
         !inConversation &&
         (
           <View>
             <View>
-            <TextInput
+            <TextTextInput 
             placeholder='好友用户名'
             onChangeText={text => setFriendName(text)}
             value={friendName}
@@ -356,23 +401,61 @@ function ChatScreen(props) {
             style={styles.stream} />
               : null
           }
+                              {!callAccepted ? <Text>连接中</Text> : null}
+                        {callAccepted && !gobangState.asking && !gobangState.asked ? (
+                            <>
+                                <Button onPress={launchGobang}>五子棋</Button>
+                            </>
+                        ) : null}
+
+                        {gobangState.asked && !gobangState.on ? (
+                            <>
+                                <Text>对方向你发送五子棋邀请</Text>
+                                <Button onPress={acceptGobang}>接受</Button>
+                            </>
+                        ) : null}
+                        {gobangState.asking && !gobangState.on ? (
+                            <>
+                                <Text>正在发送五子棋邀请</Text>
+                                <Button onPress={launchGobang}>再次发送</Button>
+                            </>
+                        ) : null}
+
+                        {
+                            // gobangOn ? <GobangTest meID={me} opponentID={opposite}/> : null
+                            gobangState.on ?
+                                <Gobang meID={socket.id} opponentID={opposite} tag={gobangState.asked ? 1 : 2} /> : null
+                        }
+
+                        {callAccepted && !songState.asking && !songState.asked ? (
+                            <>
+                                <TextInput placeholder={"歌名"} onChangeText={(e) => {
+                                    setSongName(e)
+                                }} />
+                                <Button onPress={launchSong}>一起听歌</Button>
+                            </>
+                        ) : null}
+
+                        {songState.asked && !songState.on ? (
+                            <>
+                                <Text>{`对方邀请你听歌${songName}`}</Text>
+                                <Button onPress={acceptSong}>接受</Button>
+                            </>
+                        ) : null}
+                        {songState.asking && !songState.on ? (
+                            <>
+                                <Text>正在发送听歌邀请</Text>
+                                <Button onPress={launchSong}>再次发送</Button>
+                            </>
+                        ) : null}
+                        {songState.on ?
+                            <Text>{`正在一起听歌${songName}`}</Text>
+                            : null
+                        }
         <View style={styles.footer}>
-        {/* <Button onPress = {start_stream}>开始视频</Button> */}
-          <TextInput 
-            onChangeText={(text) => { setidtoCall(text) }}
-          />
-          <>
-            {callAccepted ?
-              (<Button onPress={endcall}>结束通话</Button>) :
-              (<Button onPress={() => callusr(idtoCall)}>通话</Button>)
-            }
-          </>
-          {receivingCall && !callAccepted ? (
-            <>
-              <Text>正在呼叫</Text>
-              <Button onPress={answerCall}>接听</Button>
-            </>
-          ) : null}
+          <Button onPress={()=>{
+        props.navigation.navigate('Tab');
+      }}>结束通话</Button>
         </View>
     </SafeAreaView>
   );
