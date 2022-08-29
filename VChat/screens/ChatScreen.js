@@ -253,6 +253,7 @@ function ChatScreen(props) {
       timeout.current = setTimeout(()=>{
             setQuit(true);
             console.log("对方未接听或网络不畅");
+            Toast.fail("对方未接听或网络不畅",3);
             props.navigation.navigate('Tab');
       },wait_for);
       const startPeer = async ()=>{
@@ -304,9 +305,8 @@ function ChatScreen(props) {
   return (
     <SafeAreaView style={styles.body}>
       <Button onPress={()=>{
-        logout();
-        signOut();
-      }}>退出</Button>
+        props.navigation.navigate('home');
+      }}>结束通话</Button>
       {/* {
         !inConversation &&
         (

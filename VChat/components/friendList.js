@@ -11,6 +11,7 @@ import { StyleSheet } from "react-native";
 import { Colors } from "react-native/Libraries/NewAppScreen";
 import { View,FlatList,Text } from "react-native";
 import { Button } from "@ant-design/react-native";
+import FontAwesome from "react-native-vector-icons/FontAwesome"
 // const {Meta} = Card;
 
 // function DrawerTitle(props) {
@@ -66,6 +67,7 @@ export default function FriendList(props) {
       const renderItem = ({item})=>{
     return   (
     <View style={styles.row}>
+        <View style={{...styles.column,flex:1}}><FontAwesome name="user-circle-o" size={30} /></View>
         <View style={{...styles.column,flex:5}}><Text style={{...styles.text}}>{item.username}</Text></View>
         <View style={{...styles.column,flex:3}}><Button onPress={()=>call_onPress(item.userID)}>视频通话</Button></View>
     </View>    

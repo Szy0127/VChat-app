@@ -22,7 +22,7 @@ import { openCamera } from '../configs/cameraConfig';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { FriendScreen } from './FriendScreen';
 import { MessageScreen } from './MessageScreen';
-import { ChatroomScreen } from './ChatroomScreen';
+import { SettingScreen } from './SettingScreen';
 import { ProfileScreen } from './ProfileScreen';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
@@ -80,23 +80,23 @@ const MyTabNavigator = (props)=>{
                 headerShown:false,
                 tabBarLabel:'好友',
                 tabBarIcon: ({ color, size }) => (
-                    <AntDesign name="contacts" color={color} size={size} />
-                  ),
-                }}/>
-        <Tab.Screen name='Chatroom' component={ChatroomScreen} 
-            options={{
-                headerShown:false,
-                tabBarLabel:'多人',
-                tabBarIcon: ({ color, size }) => (
                     <FontAwesome5 name="user-friends" color={color} size={size} />
                   ),
                 }}/>
         <Tab.Screen name='Profile' component={ProfileScreen} 
             options={{
                 headerShown:false,
-                tabBarLabel: '我的',
+                tabBarLabel:'我的',
                 tabBarIcon: ({ color, size }) => (
-                  <MaterialCommunityIcons name="account" color={color} size={size} />
+                    <MaterialCommunityIcons name="account" color={color} size={size} />
+                  ),
+                }}/>
+        <Tab.Screen name='Setting' component={SettingScreen} 
+            options={{
+                headerShown:false,
+                tabBarLabel: '设置',
+                tabBarIcon: ({ color, size }) => (
+                  <AntDesign name="setting" color={color} size={size} />
                 ),
               }}
         />

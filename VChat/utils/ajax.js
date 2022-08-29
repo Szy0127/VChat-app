@@ -47,7 +47,7 @@ export const postRequest = (url, json, callback) => {
         })
         .catch((error) => {
             console.log(error);
-            alert(error);
+            // alert(error);
         });
 };
 
