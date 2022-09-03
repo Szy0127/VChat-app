@@ -62,7 +62,7 @@ const App = ()=> {
     const checkToken = async () => {
       let userToken;
       try {
-          userToken = await AsyncStorage.getItem('@Bookstore:token');
+          userToken = await AsyncStorage.getItem('@VChat:token');
       } catch (e) {
           // Restoring token failed
       }
@@ -71,7 +71,7 @@ const App = ()=> {
       checkSession(        (responseData) => {
         // console.log(responseData);
           if(!responseData.success){
-              AsyncStorage.removeItem("@Bookstore:token");
+              AsyncStorage.removeItem("@VChat:token");
               dispatch({ type: 'RESTORE_TOKEN', token: null });
           }else{
               dispatch({ type: 'RESTORE_TOKEN', token: userToken });

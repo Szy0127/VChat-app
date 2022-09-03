@@ -15,15 +15,15 @@ export const postRequest_v2 = (url, data, callback) => {
 
     fetch(url,opts)
         .then((response) => {
-            console.log(response)
+            // console.log(response)
             return response.json()
         })
         .then((data) => {
-            // console.log(data);
+            console.log(url,data);
             callback(data);
         })
         .catch((error) => {
-           console.log(error);
+           console.log(url,error);
         });
 };
 
