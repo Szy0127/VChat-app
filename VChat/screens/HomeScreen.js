@@ -27,6 +27,9 @@ import { ProfileScreen } from './ProfileScreen';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import { addAttendance } from '../services/historyService';
+import AsyncStorage from '@react-native-community/async-storage';
+import { TwoUsrRoomID } from '../utils/hash';
 // function BookListAndDetail(){
 //     return (
 //         <SafeAreaProvider>
@@ -114,10 +117,62 @@ export function HomeScreen(props){
     const [socket, setSocket] = useState(null);
     const [stream,setStream] = useState(new MediaStream());
 
+
     const [virtual, setVirtual] = useState(false);
 
+
+    
     useEffect(
         () => {
+            const f = async()=>{
+                let userid = await AsyncStorage.getItem("userID");
+
+
+                console.log("connect");
+                let _socket = io(nodeServerUrl);
+                setSocket(_socket);
+                _socket.on('connect', () => {
+                    console.log(_socket.id);
+                    //存储soketId
+                    updateSocketID(_socket.id);
+                });
+    
+    
+                _socket.on('callUsr', (data) => {
+                    console.log("incallUsr");
+                    let callerSignal = data.signal;
+                    let callerInfo = data.from;
+                    const opposite = callerInfo.userID;
+                    const roomid = TwoUsrRoomID(userid, callerInfo.userID);
+                    // setCallerSignal(data.signal);
+                    // setCallerInfo(data.from);
+                    // setReceivingCall(true);
+                    console.log(data.from);
+                    Modal.alert("视频邀请",`${callerInfo.username}(${callerInfo.addr.region})正在呼叫`,[
+                        {
+                            text:'接听',
+                            onPress:()=>{
+                                addAttendance(roomid, 0, userid, opposite, 1);
+                                props.navigation.navigate('chatting', 
+                                     {
+                                        type: 'callee',
+                                        callerSignal,
+                                        callerInfo
+                                    }
+                                );
+                            }
+                        },
+                        {
+                            text:'拒绝',
+                            onPress:()=>{addAttendance(roomid, 0, userid, opposite, 0);},
+                            style:'cancel'
+                        }
+                    ]);
+    
+                });
+            }
+        
+            f();
 
             const start_stream = async () => {
                 console.log('start');
@@ -134,37 +189,7 @@ export function HomeScreen(props){
               start_stream();
 
 
-            console.log("connect");
-            let _socket = io(nodeServerUrl);
-            setSocket(_socket);
-            _socket.on('connect', () => {
-                console.log(_socket.id);
-                //存储soketId
-                updateSocketID(_socket.id);
-            });
 
-
-            _socket.on('callUsr', (data) => {
-                console.log("incallUsr");
-                let callerSignal = data.signal;
-                let callerInfo = data.from;
-                // setCallerSignal(data.signal);
-                // setCallerInfo(data.from);
-                // setReceivingCall(true);
-                console.log(data.from);
-                Modal.alert("视频邀请",`${callerInfo.username}(${callerInfo.addr.region})正在呼叫`,[
-                    {
-                        text:'接听',
-                        onPress:()=>answerCall(callerSignal,callerInfo),
-                    },
-                    {
-                        text:'拒绝',
-                        onPress:()=>{console.log("拒绝")},
-                        style:'cancel'
-                    }
-                ]);
-
-            });
         }
         , []
     )
@@ -172,21 +197,6 @@ export function HomeScreen(props){
 
 
 
-    const answerCall = (callerSignal,callerInfo) => {
-        // if (callerInfo == '' || callerSignal == '') {
-        //     alert("请稍后重试");
-        //     return;
-        // }
-
-        props.navigation.navigate('chatting', 
-             {
-                type: 'callee',
-                callerSignal: callerSignal,
-                callerInfo: callerInfo
-            }
-        );
-
-    }
 
     const gotoFriends = ()=>{
         props.navigation.navigate('friends');

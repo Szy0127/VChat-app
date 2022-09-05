@@ -22,6 +22,7 @@ import { wait_for } from '../configs/constantConfig';
 import { AuthContext,SocketContext } from '../context';
 import AsyncStorage from '@react-native-community/async-storage';
 import { configure } from '../configs/iceServerConfig';
+import { addAttendance } from '../services/historyService';
 /*
 
 
@@ -114,7 +115,7 @@ function ChatScreen(props) {
 
 
   //呼叫
-  const callusr = async (idtoCall) => {
+  const callusr = async (idtoCall,roomid,userid) => {
     const addr = await getIPRegion();
     console.log('ip addr:', addr);
     setInConversation(true);
@@ -156,7 +157,8 @@ function ChatScreen(props) {
           from: {
               socketID: socket.id,
               username,
-              addr
+              addr,
+              userID:userid
           }
       })
   })
@@ -177,6 +179,7 @@ function ChatScreen(props) {
       peer.signal(signal);
       socket.emit("callAccepted3", idtoCall);
       clearTimeout(timeout.current);
+      addAttendance(roomid, 0, userid, -1, 1);
   })
     //存储peer
     connectionRef.current = peer;
@@ -253,18 +256,17 @@ function ChatScreen(props) {
 
   useEffect(() => {
     // getFriends((data)=>setFriends(data));
-      timeout.current = setTimeout(()=>{
-            setQuit(true);
-            console.log("对方未接听或网络不畅");
-            Toast.fail("对方未接听或网络不畅",3);
-            props.navigation.navigate('Tab');
-      },wait_for);
+
+      let message = props.navigation.getState().routes[1].params;
+      const userid = message.userid;
+      const roomid = message.roomid;
+      console.log("userid,roomid:",userid,roomid);
       const startPeer = async ()=>{
         // console.log("type:",props.navigation.getParam('type',''));
-        let message = props.navigation.getState().routes[1].params;
+        
         if (message.type === 'caller') {
                   setOpposite(message.calleeSocketID);
-                  await callusr(message.calleeSocketID);
+                  await callusr(message.calleeSocketID,roomid,userid);
                   console.log("callusr finish");
               } else {
                   setOpposite(message.callerInfo.socketID);
@@ -272,6 +274,13 @@ function ChatScreen(props) {
               }
 
       }
+      timeout.current = setTimeout(()=>{
+        setQuit(true);
+        addAttendance(roomid, 0, userid, -1, 0);
+        console.log("对方未接听或网络不畅");
+        Toast.fail("对方未接听或网络不畅",3);
+        props.navigation.navigate('Tab');
+  },wait_for);
       startPeer();
 
   socket.on('launchGobang', (data) => {

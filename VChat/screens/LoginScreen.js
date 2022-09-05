@@ -23,7 +23,7 @@ function fetchData({name,password,signIn}) {
             console.log(responseData);
             let _storeData = async () => {
                 try {
-                    await AsyncStorage.setItem("@Bookstore:token",'exist');
+                    await AsyncStorage.setItem("@VChat:token",'exist');
                 } catch (error) {
                     // Error saving data
                 }

@@ -1,1 +1,1 @@
-export const wait_for = 20000;//ms
+export const wait_for = 30000;//ms

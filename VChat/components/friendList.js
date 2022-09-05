@@ -12,6 +12,8 @@ import { Colors } from "react-native/Libraries/NewAppScreen";
 import { View,FlatList,Text } from "react-native";
 import { Button } from "@ant-design/react-native";
 import FontAwesome from "react-native-vector-icons/FontAwesome"
+import AsyncStorage from "@react-native-community/async-storage";
+import { TwoUsrRoomID } from "../utils/hash";
 // const {Meta} = Card;
 
 // function DrawerTitle(props) {
@@ -42,11 +44,13 @@ export default function FriendList(props) {
     //     setVisible(true);
     // }
 
-    const call_onPress = (callID) => {
+    const call_onPress = async(callID) => {
         // console.log(callID);
         if(callID < 0){
             return;
         }
+        let userid = await AsyncStorage.getItem("userID");
+        const roomid = TwoUsrRoomID(userid, callID);
         getSocketIDByUserID(callID,
             (data) => {
                 if (data.length > 0) {
@@ -55,6 +59,9 @@ export default function FriendList(props) {
                          {
                             type:'caller',
                             calleeSocketID:data[0],
+                            roomid,
+                            userid,
+                            opposite: callID
                         }
                     )
                 } else {

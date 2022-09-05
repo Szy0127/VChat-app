@@ -18,6 +18,7 @@ export const createRoomMulti = (room_id, sponsor_id) => {
 }
 
 export const addAttendance = (room_id, mode, user_id, invitor_id, accepted) => {
+    console.log("addAttendance",room_id,mode,user_id,invitor_id,accepted);
     postRequest_v2(apiUrl + "/addAttendance", {
         room_id: room_id,
         mode: mode,
