@@ -1,8 +1,8 @@
 import {apiUrl} from "../configs/urlConfig";
-import { postRequest, postRequest_v2 } from "../utils/ajax";
+import { postRequest_formData } from "../utils/ajax";
 
 export const createRoomTwo = (room_id, caller_id, callee_id) => {
-    postRequest_v2(apiUrl + "/createRoomTwo", {
+    postRequest_formData(apiUrl + "/createRoomTwo", {
         room_id: room_id,
         caller_id: caller_id,
         callee_id: callee_id
@@ -10,7 +10,7 @@ export const createRoomTwo = (room_id, caller_id, callee_id) => {
 }
 
 export const createRoomMulti = (room_id, sponsor_id) => {
-    postRequest_v2(apiUrl + "/createRoomMulti", {
+    postRequest_formData(apiUrl + "/createRoomMulti", {
         room_id: room_id,
         sponsor_id: sponsor_id
     }, () => {});
@@ -19,7 +19,7 @@ export const createRoomMulti = (room_id, sponsor_id) => {
 
 export const addAttendance = (room_id, mode, user_id, invitor_id, accepted) => {
     console.log("addAttendance",room_id,mode,user_id,invitor_id,accepted);
-    postRequest_v2(apiUrl + "/addAttendance", {
+    postRequest_formData(apiUrl + "/addAttendance", {
         room_id: room_id,
         mode: mode,
         user_id: user_id,
@@ -30,13 +30,13 @@ export const addAttendance = (room_id, mode, user_id, invitor_id, accepted) => {
 
 export const getAttendance = (user_id, callback) => {
     console.log("getattendance",user_id);
-    postRequest_v2(apiUrl + "/getAttendance", {user_id: user_id}, callback);
+    postRequest_formData(apiUrl + "/getAttendance", {user_id: user_id}, callback);
 }
 
 export const getHistoryTwo = (room_id, callback) => {
-    postRequest_v2(apiUrl + "/getHistoryTwo", {room_id: room_id}, callback);
+    postRequest_formData(apiUrl + "/getHistoryTwo", {room_id: room_id}, callback);
 }
 
 export const getHistoryMulti = (room_id, callback) => {
-    postRequest_v2(apiUrl + "/getHistoryMulti", {room_id: room_id}, callback);
+    postRequest_formData(apiUrl + "/getHistoryMulti", {room_id: room_id}, callback);
 }

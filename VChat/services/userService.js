@@ -1,45 +1,45 @@
 import {apiUrl} from "../configs/urlConfig";
-import {postRequest, postRequest_v2, postRequest_v3} from '../utils/ajax';
+import {postRequest_formData, postRequest_formData_async, postRequest_json} from '../utils/ajax';
 
 
 export const sendVerification = (form, callback) => {
-    postRequest_v2(apiUrl + "/sendVerification", form, callback);
+    postRequest_formData(apiUrl + "/sendVerification", form, callback);
 }
 
 export const modifyPassword = (form, callback) => {
-    postRequest_v2(apiUrl + "/modifyPassword", form, callback);
+    postRequest_formData(apiUrl + "/modifyPassword", form, callback);
 }
 
 export const checkSession =  (callback) => {
-    postRequest(apiUrl + "/checkSession", {}, callback);
+    postRequest_json(apiUrl + "/checkSession", {}, callback);
 }
 
 export const logout = () => {
-    postRequest(apiUrl + "/logout", {}, () => {}, () => {});
+    postRequest_json(apiUrl + "/logout", {}, () => {}, () => {});
 }
 
 export const login = (username,password,callback)=>{
-    postRequest_v2(apiUrl+"/login",{username:username,password:password},callback);
+    postRequest_formData(apiUrl+"/login",{username:username,password:password},callback);
 }
 
 // export const register = (form, callback) => {
-//     postRequest_v2(apiUrl + "/register", form, callback);
+//     postRequest_formData(apiUrl + "/register", form, callback);
 // }
 
 export const getFriends = (callback) => {
-    postRequest(apiUrl + "/getFriends", {}, callback, () => {});
+    postRequest_json(apiUrl + "/getFriends", {}, callback, () => {});
 }
 
 export const getSocketIDByUserID = (userID, callback) => {
-    postRequest_v2(apiUrl + "/getSocketByUser", {userID:userID}, callback);
+    postRequest_formData(apiUrl + "/getSocketByUser", {userID:userID}, callback);
 }
 
 export const addFriend = (friendName, callback) => {
-    postRequest_v2(apiUrl + "/addFriend",{friendName:friendName}, callback);
+    postRequest_formData(apiUrl + "/addFriend",{friendName:friendName}, callback);
 }
 
 export const updateSocketID = (socketID) => {
-    postRequest_v2(apiUrl + "/updateSocket", {socketID:socketID}, ()=>{});
+    postRequest_formData(apiUrl + "/updateSocket", {socketID:socketID}, ()=>{});
 }
 
 let email_reg = /^([a-zA-Z]|[0-9])(\w|\-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/;
@@ -67,5 +67,14 @@ export const register = (username,password,password_confirm,email,callback)=>{
         return;
     }
     loading();
-    postRequest_v2(apiUrl+"/register",{username:username,password:password,email:email},callback);
+    postRequest_formData(apiUrl+"/register",{username:username,password:password,email:email},callback);
+}
+
+export const uploadAvatar = async (image, userid, callback) => {
+    await postRequest_formData_async(apiUrl + "/modifyAvatar", {image: image, userid: userid});
+    callback();
+}
+
+export const getAvatar = (userid, callback) => {
+    postRequest_formData(apiUrl + "/getAvatar", {userid: userid}, callback);
 }

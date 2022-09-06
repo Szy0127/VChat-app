@@ -14,6 +14,7 @@ import { Button } from "@ant-design/react-native";
 import FontAwesome from "react-native-vector-icons/FontAwesome"
 import AsyncStorage from "@react-native-community/async-storage";
 import { TwoUsrRoomID } from "../utils/hash";
+import { Avatar } from "./Avatar";
 // const {Meta} = Card;
 
 // function DrawerTitle(props) {
@@ -74,7 +75,7 @@ export default function FriendList(props) {
       const renderItem = ({item})=>{
     return   (
     <View style={styles.row}>
-        <View style={{...styles.column,flex:1}}><FontAwesome name="user-circle-o" size={30} /></View>
+        <View style={{...styles.column,flex:1}}><Avatar userID={item.userID} size={30} /></View>
         <View style={{...styles.column,flex:5}}><Text style={{...styles.text}}>{item.username}</Text></View>
         <View style={{...styles.column,flex:3}}><Button onPress={()=>call_onPress(item.userID)}>视频通话</Button></View>
     </View>    

@@ -1,4 +1,4 @@
-export const postRequest_v2 = (url, data, callback) => {
+export const postRequest_formData = (url, data, callback) => {
     let formData = new FormData();
 
     for (let p in data){
@@ -11,23 +11,22 @@ export const postRequest_v2 = (url, data, callback) => {
         body: formData,
         credentials: "include"
     };
-    // console.log(opts);
 
     fetch(url,opts)
         .then((response) => {
-            // console.log(response)
-            return response.json()
+            return response.json();
         })
         .then((data) => {
-            console.log(url,data);
             callback(data);
         })
         .catch((error) => {
-           console.log(url,error);
+            console.log(error);
+            // history.push('/login');
+            // history.go(0);
         });
 };
 
-export const postRequest = (url, json, callback) => {
+export const postRequest_json = (url, json, callback) => {
 
     let opts = {
         method: "POST",
@@ -37,21 +36,22 @@ export const postRequest = (url, json, callback) => {
         },
         credentials: "include"
     };
-    // alert(url);
+
     fetch(url,opts)
         .then((response) => {
-            return response.json()
+            return response.json();
         })
         .then((data) => {
             callback(data);
         })
         .catch((error) => {
             console.log(error);
-            // alert(error);
+            // history.push('/login');
+            // history.go(0);
         });
 };
 
-export const postRequest_v3 = async (url, json) => {
+export const postRequest_json_async = async (url, json) => {
     let opts = {
         method: "POST",
         body: JSON.stringify(json),
@@ -62,5 +62,35 @@ export const postRequest_v3 = async (url, json) => {
     };
 
     const response = await fetch(url, opts);
-    return await response.json();
+    try {
+        return await response.json();
+    }catch (e){
+        console.log(e);
+        // history.push('/login');
+        // history.go(0);
+    }
+}
+
+export const postRequest_formData_async = async (url, data) => {
+    let formData = new FormData();
+
+    for (let p in data){
+        if(data.hasOwnProperty(p))
+            formData.append(p, data[p]);
+    }
+
+    let opts = {
+        method: "POST",
+        body: formData,
+        credentials: "include"
+    };
+
+    const response = await fetch(url, opts);
+    try {
+        return await response.json();
+    }catch (e){
+        console.log(e);
+        // history.push('/login');
+        // history.go(0);
+    }
 }
