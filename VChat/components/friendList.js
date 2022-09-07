@@ -77,7 +77,7 @@ export default function FriendList(props) {
     <View style={styles.row}>
         <View style={{...styles.column,flex:1}}><Avatar userID={item.userID} size={30} /></View>
         <View style={{...styles.column,flex:5}}><Text style={{...styles.text}}>{item.username}</Text></View>
-        <View style={{...styles.column,flex:3}}><Button type="primary" onPress={()=>call_onPress(item.userID)}>视频通话</Button></View>
+        <View style={{...styles.column,flex:3}}><Button type="primary" onPress={()=>call_onPress(item.userID)}>邀请聊天</Button></View>
     </View>    
   );
   }
@@ -111,6 +111,7 @@ const styles = StyleSheet.create({
       flexDirection: 'row', 
       justifyContent: 'space-around',
       marginHorizontal:10,
+      backgroundColor:"#ffffff"
       // alignItems:'center'
     },
       column:{
