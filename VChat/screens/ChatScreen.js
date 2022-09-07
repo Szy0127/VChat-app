@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState,useContext,useReducer } from 'react'
-import { Button,Toast } from '@ant-design/react-native'
+import { Button,Toast,Drawer } from '@ant-design/react-native'
 import { Text,TextInput ,View,StyleSheet,FlatList} from 'react-native'
 import {
   RTCPeerConnection,
@@ -23,6 +23,7 @@ import { AuthContext,SocketContext } from '../context';
 import AsyncStorage from '@react-native-community/async-storage';
 import { configure } from '../configs/iceServerConfig';
 import { addAttendance } from '../services/historyService';
+import { MessageArea } from '../components/MessageArea';
 /*
 
 
@@ -73,6 +74,8 @@ function ChatScreen(props) {
 
   const {socket,stream} = useContext(SocketContext);
 
+  const [userid,setUserid] = useState(0);
+  const [roomid,setRoomid] = useState('');
   const [otherStream, setOtherStream] = useState(null);
   const [opposite,setOpposite] = useState('');
   const myVideo = useRef();
@@ -109,7 +112,7 @@ function ChatScreen(props) {
   );
 
   const timeout = useRef();
-
+    const drawerRef = useRef(null);
 
 
 
@@ -258,15 +261,17 @@ function ChatScreen(props) {
     // getFriends((data)=>setFriends(data));
 
       let message = props.navigation.getState().routes[1].params;
-      const userid = message.userid;
-      const roomid = message.roomid;
-      console.log("userid,roomid:",userid,roomid);
+      const _userid = message.userid;
+      const _roomid = message.roomid;
+      setUserid(_userid);
+      setRoomid(_roomid);
+      console.log("userid,roomid:",_userid,_roomid);
       const startPeer = async ()=>{
         // console.log("type:",props.navigation.getParam('type',''));
         
         if (message.type === 'caller') {
                   setOpposite(message.calleeSocketID);
-                  await callusr(message.calleeSocketID,roomid,userid);
+                  await callusr(message.calleeSocketID,_roomid,_userid);
                   console.log("callusr finish");
               } else {
                   setOpposite(message.callerInfo.socketID);
@@ -410,7 +415,24 @@ const acceptSong = () => {
             style={styles.stream} />
               : null
           }
-                              {!callAccepted ? <Text>连接中</Text> : null}
+                  {!callAccepted ? <Text>连接中</Text> : null}
+              <Drawer
+                sidebar={
+                    <MessageArea userid={5} roomid={"4-5"} close={drawerRef.current ? drawerRef.current.closeDrawer:()=>[]}/>
+
+                }
+                 position="right"
+                open={false}
+                drawerRef={el => (drawerRef.current=el)}
+                // onOpenChange={this.onOpenChange}
+                drawerBackgroundColor="#ccc"
+            >
+                <View >
+                <Button type="primary" onPress={() => drawerRef.current && drawerRef.current.openDrawer()}>
+                    文字聊天
+                </Button>
+                </View>
+            </Drawer>
                         {callAccepted && !gobangState.asking && !gobangState.asked ? (
                             <>
                                 <Button onPress={launchGobang}>五子棋</Button>

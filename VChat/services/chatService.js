@@ -1,11 +1,11 @@
-import {postRequest_v2} from "../utils/ajax";
+import {postRequest_formData,postRequest_formData_async} from "../utils/ajax";
 import {apiUrl} from "../configs/urlConfig";
 
-export const sendMessage = (message, callback) => {
-    console.log(message)
-    postRequest_v2(apiUrl + "/sendMessage", message, callback);
+export const sendMessage = async (message) => {
+    return await postRequest_formData_async(apiUrl + "/sendMessage", message);
+
 }
 
-export const getMessage = (room_id, callback) => {
-    postRequest_v2(apiUrl + "/getMessage", {room_id: room_id}, callback);
+export const getMessage = (room_id, receiver_id, callback) => {
+    postRequest_formData(apiUrl + "/getMessage", {room_id: room_id, receiver_id: receiver_id}, callback);
 }

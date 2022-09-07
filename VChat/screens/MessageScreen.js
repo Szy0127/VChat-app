@@ -37,7 +37,7 @@ export const MessageScreen =()=>{
     const renderItem = ({item})=>{
         const time = new Date(item.time);
         const time_str = `${time.toLocaleDateString()} --- ${time.toTimeString().slice(0, 8)}`;
-        let content = '', state = '', icon = '';
+        let content = '', state = '', icon = null;
 
         if (item.mode === 0) {
             if (item.invitorID === -1)
