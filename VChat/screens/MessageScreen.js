@@ -6,6 +6,7 @@ import AsyncStorage from "@react-native-community/async-storage";
 import DetailedHistory from "../components/history";
 import { getAttendance } from "../services/historyService";
 import { Card,Button } from "@ant-design/react-native";
+import AntDesign from 'react-native-vector-icons/AntDesign';
 export const MessageScreen =()=>{
     const [history, setHistory] = useState([]);
     const [roomid, setRoomid] = useState('');
@@ -43,11 +44,12 @@ export const MessageScreen =()=>{
                 content = '好友邀请你进行了聊天 ----- ';
             if (item.accepted === 1) {
                 state = '已接听';
-                // icon = <CheckCircleOutlined style={{color: "#52c41a"}}/>
+
+                icon = <AntDesign name="checkcircle" color={"#52c41a"} size={25} />
             }
             else {
                 state = '未接听';
-                // icon = <InfoCircleOutlined style={{color: "#f5222d"}}/>;
+                icon = <AntDesign name="closecircle" color={"#f5222d"} size={25} />
             }
         } else {
             if (item.invitorID === -1)
@@ -58,33 +60,37 @@ export const MessageScreen =()=>{
                 content = '你受邀请加入了一个聊天室 ----- ';
                 if (item.accepted === 1) {
                     state = '已接受';
-                    // icon = <CheckCircleOutlined style={{color: "#52c41a"}}/>
+                    icon = <AntDesign name="checkcircle" color={"#52c41a"} size={25} />
                 }
                 else {
                     state = '未接受';
-                    // icon = <InfoCircleOutlined style={{color: "#f5222d"}}/>;
+                    icon = <AntDesign name="closecircle" color={"#f5222d"} size={25} />
                 }
             }
         }
 
 
         return (
-            <View>
-                <Text>
+            <View style={{flex:1,flexDirection: 'column',justifyContent:"center",backgroundColor:"#ffffff"}}>
+                <Text style={{flex:1,fontSize:20,backgroundColor:"#C0C0C0",paddingLeft:3,paddingVertical:5}}>
                     {time_str}
                 </Text>
-                <Text>
-                    {`${content}${state}`}
-                </Text>
-                
-                <Button
-                    type="primary"
-                    onPress={() => {
-                        toggleModal(item)
-                    }}
-                >
-                    <Text>详情</Text>
-                </Button>
+                <View style={{flex:1,flexDirection: 'row',alignItems:"center"}}>
+                    <Text style={{flex:4,fontSize:15,paddingLeft:3}}>
+                        {`${content}${state}`}
+                    </Text>
+                    {icon}
+                    
+                    <Button
+                        style={{flex:1,size:8}}
+                        type="primary"
+                        onPress={() => {
+                            toggleModal(item)
+                        }}
+                    >
+                        <Text>详情</Text>
+                    </Button>
+                </View>
             </View>
         )
     }

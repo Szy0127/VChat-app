@@ -1,7 +1,11 @@
 import {apiUrl} from "../configs/urlConfig";
 import {postRequest_formData, postRequest_formData_async, postRequest_json} from '../utils/ajax';
-
-
+import { loading } from "../utils/utils";
+import { nonce } from "../configs/constantConfig";
+import sha256 from "crypto-js/sha256";
+const enc = (password)=>{
+    return sha256(password + nonce.toString()).toString();
+}
 export const sendVerification = (form, callback) => {
     postRequest_formData(apiUrl + "/sendVerification", form, callback);
 }
@@ -19,7 +23,7 @@ export const logout = () => {
 }
 
 export const login = (username,password,callback)=>{
-    postRequest_formData(apiUrl+"/login",{username:username,password:password},callback);
+    postRequest_formData(apiUrl+"/login",{username,password:enc(password)},callback);
 }
 
 // export const register = (form, callback) => {
@@ -31,15 +35,15 @@ export const getFriends = (callback) => {
 }
 
 export const getSocketIDByUserID = (userID, callback) => {
-    postRequest_formData(apiUrl + "/getSocketByUser", {userID:userID}, callback);
+    postRequest_formData(apiUrl + "/getSocketByUser", {userID}, callback);
 }
 
 export const addFriend = (friendName, callback) => {
-    postRequest_formData(apiUrl + "/addFriend",{friendName:friendName}, callback);
+    postRequest_formData(apiUrl + "/addFriend",{friendName}, callback);
 }
 
 export const updateSocketID = (socketID) => {
-    postRequest_formData(apiUrl + "/updateSocket", {socketID:socketID}, ()=>{});
+    postRequest_formData(apiUrl + "/updateSocket", {socketID}, ()=>{});
 }
 
 let email_reg = /^([a-zA-Z]|[0-9])(\w|\-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/;
@@ -67,14 +71,14 @@ export const register = (username,password,password_confirm,email,callback)=>{
         return;
     }
     loading();
-    postRequest_formData(apiUrl+"/register",{username:username,password:password,email:email},callback);
+    postRequest_formData(apiUrl+"/register",{username,password:enc(password),email},callback);
 }
 
 export const uploadAvatar = async (image, userid, callback) => {
-    await postRequest_formData_async(apiUrl + "/modifyAvatar", {image: image, userid: userid});
+    await postRequest_formData_async(apiUrl + "/modifyAvatar", {image, userid});
     callback();
 }
 
 export const getAvatar = (userid, callback) => {
-    postRequest_formData(apiUrl + "/getAvatar", {userid: userid}, callback);
+    postRequest_formData(apiUrl + "/getAvatar", {userid}, callback);
 }
