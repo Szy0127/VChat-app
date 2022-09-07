@@ -13,10 +13,11 @@ export const MessageScreen =()=>{
     const [roomid, setRoomid] = useState('');
     const [mode, setMode] = useState(0);
     const [visible, setVisible] = useState(false);
-
+    const [userID,setUserID] = useState(0);
     useEffect( () => {
         const f = async ()=>{
                     let id = await AsyncStorage.getItem("userID");
+                    setUserID(id);
         getAttendance(id, (data) => {
                 console.log(id,data);
                 setHistory(data);
@@ -107,6 +108,7 @@ export const MessageScreen =()=>{
                 mode={mode}
                 roomid={roomid}
                 visible={visible}
+                userID={userID}
                 onCancel={() => {setVisible(false);}}
             />
             {
@@ -118,3 +120,4 @@ export const MessageScreen =()=>{
         </ImageBackground>
     )
 }
+
