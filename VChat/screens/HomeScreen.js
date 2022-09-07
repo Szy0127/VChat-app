@@ -2,7 +2,7 @@
  * Created by lpp on 2020/3/14.
  */
 import React from 'react';
-import { View,Text} from 'react-native';
+import { ImageBackground } from 'react-native';
 import {Profile} from '../components/Profile';
 import { createStackNavigator } from '@react-navigation/stack';
 import {BookScreen} from './BookScreen';
@@ -30,6 +30,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import { addAttendance } from '../services/historyService';
 import AsyncStorage from '@react-native-community/async-storage';
 import { TwoUsrRoomID } from '../utils/hash';
+import backgroundImg from "../asserts/background-vertical.png";
 // function BookListAndDetail(){
 //     return (
 //         <SafeAreaProvider>
@@ -207,12 +208,13 @@ export function HomeScreen(props){
     return (
 
 
-        <SocketContext.Provider value={{socket,stream}}>
-            <Stack.Navigator initialRouteName='Tab'>
-                <Stack.Screen name="Tab" component={MyTabNavigator} options={{headerShown:false}}/>
-                <Stack.Screen name="chatting" component={ChatScreen} options={{headerShown:false}}/>
-            </Stack.Navigator>
-        </SocketContext.Provider>
+            <SocketContext.Provider value={{socket,stream}}>
+                <Stack.Navigator initialRouteName='Tab'>
+                    <Stack.Screen name="Tab" component={MyTabNavigator} options={{headerShown:false}}/>
+                    <Stack.Screen name="chatting" component={ChatScreen} options={{headerShown:false}}/>
+                </Stack.Navigator>
+            </SocketContext.Provider>
+
 
     );
 }

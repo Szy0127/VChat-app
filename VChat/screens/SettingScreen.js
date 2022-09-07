@@ -1,10 +1,13 @@
 import React from "react";
-import { View,Text } from "react-native";
-
+import { View,Text,ImageBackground } from "react-native";
+import backgroundImg from "../asserts/background-vertical.png";
 export const SettingScreen =()=>{
     return (
-        <View>
-            <Text>Chatroom</Text>
-        </View>
+        <ImageBackground source={backgroundImg} style={{        flex:1,
+            width:'100%',
+            height:'100%',
+            position:'absolute'}}>
+            <Text>setting</Text>
+        </ImageBackground>
     )
 }

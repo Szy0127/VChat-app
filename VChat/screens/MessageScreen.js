@@ -1,12 +1,13 @@
 import React from "react";
 import { useState,useEffect } from "react";
-import { View,Text, FlatList } from "react-native";
+import { View,Text, FlatList, ImageBackground } from "react-native";
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import AsyncStorage from "@react-native-community/async-storage";
 import DetailedHistory from "../components/history";
 import { getAttendance } from "../services/historyService";
 import { Card,Button } from "@ant-design/react-native";
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import backgroundImg from "../asserts/background-vertical.png";
 export const MessageScreen =()=>{
     const [history, setHistory] = useState([]);
     const [roomid, setRoomid] = useState('');
@@ -92,11 +93,16 @@ export const MessageScreen =()=>{
                     </Button>
                 </View>
             </View>
+            
         )
     }
 
     return (
-        <View>
+        <ImageBackground source={backgroundImg} style={{        flex:1,
+            width:'100%',
+            height:'100%',
+            position:'absolute'}}>
+
             <DetailedHistory
                 mode={mode}
                 roomid={roomid}
@@ -108,6 +114,7 @@ export const MessageScreen =()=>{
                     <Text>暂无消息</Text> :
                 <FlatList data={history} renderItem={renderItem}/>
             }
-        </View>
+
+        </ImageBackground>
     )
 }
