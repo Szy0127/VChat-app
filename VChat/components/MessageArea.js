@@ -19,25 +19,18 @@ export const MessageArea = (props)=>{
                 {
                     msg.map((item, idx) => {
                         return item['userID'] === parseInt(props.userid) ?
-                        <View key={idx} style={{flexDirection:"row",alignItems:"center",justifyContent:"flex-end",backgroundColor:"#9acd32",height:40}}>
+                        <View key={idx} style={{flexDirection:"row",alignItems:"center",justifyContent:"flex-end",backgroundColor:"#9acd32",height:40,marginVertical:3}}>
                             <Text style={{fontSize:22}}>{item.content}</Text>
                             <Avatar userID={item.userID} size={30}/>
                             
                             {/* <Text>{item.time}</Text> */}
                         </View>:
-                        <View key={idx} style={{flexDirection:"row",alignItems:"center",justifyContent:"flex-start",backgroundColor:"#f8c301",height:40}}>
+                        <View key={idx} style={{flexDirection:"row",alignItems:"center",justifyContent:"flex-start",backgroundColor:"#f8c301",height:40,marginVertical:3}}>
                         <Avatar userID={item.userID} size={30}/>
                         <Text style={{fontSize:22}}>{item.content}</Text>
                         {/* <Text>{item.time}</Text> */}
                         </View>
                     })
                 }
-
-                {/* <View>
-                    <Button type="primary">发送</Button>
-                </View> */}
-        <Button  type="primary" onPress={props.close}>
-            关闭
-        </Button>
 </View>
 }

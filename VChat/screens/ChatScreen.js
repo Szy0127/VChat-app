@@ -431,10 +431,14 @@ const acceptSong = () => {
                   !callAccepted ? <Text>连接中</Text> : 
                   <Drawer
                 sidebar={
-                    <MessageArea userid={userid} roomid={roomid} close={drawerRef.current ? ()=>{
+                  <View style={{flex:1,backgroundColor:"#ffffff"}}>
+                    <MessageArea userid={userid} roomid={roomid} />
+                    <Button  type="primary" onPress={drawerRef.current ? ()=>{
                       drawerRef.current.closeDrawer();
                       setShowRTCView(true);
-                    }:()=>{setShowRTCView(true)}}/>
+                    }:()=>{setShowRTCView(true)}}>
+                    关闭
+                </Button></View>
 
                 }
                 position="right"

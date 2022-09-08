@@ -5,6 +5,7 @@ import React from "react";
 import { View,Text } from "react-native";
 import { Avatar } from "./Avatar";
 import { StyleSheet } from "react-native";
+import { MessageArea } from "./MessageArea";
 export default function DetailedHistory(props) {
     const {mode, roomid, visible,userID, onCancel} = props;
     const [users, setUsers] = useState([]);
@@ -55,6 +56,10 @@ export default function DetailedHistory(props) {
                         )
                     }) : null
                 }
+            </View>
+            <View style={styles.row}>
+                <Text  style={styles.title} >消息记录</Text>
+                <MessageArea roomid={roomid} userid={userID}/>
             </View>
             <Button type="primary" onPress={onCancel}>
                 关闭
