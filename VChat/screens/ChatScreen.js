@@ -24,6 +24,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import { configure } from '../configs/iceServerConfig';
 import { addAttendance } from '../services/historyService';
 import { MessageArea } from '../components/MessageArea';
+import { ErrorBoundary } from 'react-error-boundary';
 /*
 
 
@@ -240,7 +241,10 @@ function ChatScreen(props) {
   }
   const endcall = () => {
     setCallEnded(true);
-    connectionRef.current.destory();
+    socket.emit("endCall",{to:opposite})
+    console.log(connectionRef.current);
+    // connectionRef.current.destory();
+    props.navigation.navigate('Tab');
   }
 
 
@@ -268,6 +272,7 @@ function ChatScreen(props) {
       setUserid(_userid);
       setRoomid(_roomid);
       console.log("userid,roomid:",_userid,_roomid);
+      socket.on("endCall",()=>{endcall()});
       const startPeer = async ()=>{
         // console.log("type:",props.navigation.getParam('type',''));
         
@@ -367,6 +372,10 @@ const acceptSong = () => {
 
 
   return (
+  //   <ErrorBoundary
+  //   FallbackComponent={()=><Text>视频流中断</Text>}
+  //   onError={()=>{props.navigation.navigate("Tab");Toast.alert("对方已退出,将回到主页")}}
+  // >
     <SafeAreaView style={styles.body}>
       {/* {
         !inConversation &&
@@ -404,19 +413,16 @@ const acceptSong = () => {
               streamURL={stream.toURL()}
               style={styles.stream} />
           }
-          {callAccepted ?
-            // <video
-            //   style={{ width: "300px" }}
-            //   playsInline
-            //   autoPlay
-            //   muted
-            //   ref={userVideo} /> 
-            showRTCView && otherStream && 
-            <RTCView
-            streamURL={otherStream.toURL()}
-            style={styles.stream} />
-              : null
-          }
+          
+            {callAccepted ?
+              showRTCView && otherStream && 
+              <RTCView
+              streamURL={otherStream.toURL()}
+              style={styles.stream} />
+                : null
+            }
+
+
                   {
                   !callAccepted ? <Text>连接中</Text> : 
                   <Drawer
@@ -498,10 +504,12 @@ const acceptSong = () => {
                         }
         <View style={styles.footer}>
           <Button onPress={()=>{
-        props.navigation.navigate('Tab');
+        
+        endcall();
       }}>结束通话</Button>
         </View>
     </SafeAreaView>
+    // </ErrorBoundary>
   );
 }
 const styles = StyleSheet.create({
