@@ -10,7 +10,7 @@ import { getFriends,getSocketIDByUserID } from "../services/userService";
 import { StyleSheet } from "react-native";
 import { Colors } from "react-native/Libraries/NewAppScreen";
 import { View,FlatList,Text } from "react-native";
-import { Button } from "@ant-design/react-native";
+import { Button, Modal } from "@ant-design/react-native";
 import FontAwesome from "react-native-vector-icons/FontAwesome"
 import AsyncStorage from "@react-native-community/async-storage";
 import { TwoUsrRoomID } from "../utils/hash";
@@ -66,7 +66,7 @@ export default function FriendList(props) {
                         }
                     )
                 } else {
-                    alert("好友不在线");
+                    Modal.alert("提示","对方不在线，请稍后再试",[{text:"确定",onPress:()=>{}}])
                 }
             }
         )
