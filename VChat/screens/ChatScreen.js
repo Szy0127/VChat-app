@@ -243,7 +243,6 @@ function ChatScreen(props) {
   const endcall = () => {
     socket.emit("endCall",opposite);
     finishCall();
-    Toast.alert("对方已退出,将回到主页",2);
 }
 const finishCall = ()=>{
     setCallEnded(true);
@@ -277,7 +276,7 @@ const finishCall = ()=>{
       setUserid(_userid);
       setRoomid(_roomid);
       console.log("userid,roomid:",_userid,_roomid);
-      socket.on("endCall",()=>{finishCall()});
+      socket.on("endCall",()=>{finishCall(); Toast.info("对方已退出,将回到主页",2);});
       const startPeer = async ()=>{
         // console.log("type:",props.navigation.getParam('type',''));
         
