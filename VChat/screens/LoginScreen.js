@@ -13,6 +13,7 @@ import {AuthContext} from "../context";
 import {loading} from "../utils/utils.js";
 import {login} from "../services/userService";
 import { Toast,Button } from '@ant-design/react-native';
+import { Header } from '../components/Header';
 // 获取屏幕的宽和高
 let {width,height} = Dimensions.get('window');
 
@@ -61,7 +62,8 @@ export function LoginScreen(props){
     return (
             <View style={{ flex: 1}}>
                 <View style={styles.container}>
-                    <Text style={styles.titleStyle}>登录</Text>
+                    {/* <Text style={styles.titleStyle}>登录</Text> */}
+                    <Header content={"登录"}/>
                     {/*账号和密码*/}
                     <TextInput
                         style={styles.textInputStyle}
@@ -87,10 +89,8 @@ export function LoginScreen(props){
 
                     {/*设置*/}
                     <View style={styles.settingStyle}>
-                        <Button size="small" type="primary" onPress={()=>props.navigation.navigate('Register')}>忘记密码</Button>
-                        {/* <Text>忘记密码</Text> */}
                         <Button size="small" type="primary" onPress={()=>props.navigation.navigate('Register')}>注册</Button>
-                        {/* <Text>注册</Text> */}
+                        <Button size="small" type="primary" onPress={()=>props.navigation.navigate('Reset')}>忘记密码</Button>
                     </View>
 
                 </View>

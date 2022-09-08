@@ -12,6 +12,7 @@ import {SplashScreen} from "./components/splash";
 import {AuthContext} from "./context";
 import { checkSession } from './services/userService';
 import { RegisterScreen } from './screens/RegisterScreen';
+import { ResetScreen } from './screens/ResetScreen';
 const Stack = createStackNavigator();
 
 
@@ -125,6 +126,7 @@ const App = ()=> {
                         <Stack.Screen name="Home" component={HomeScreen} options={{headerShown:false}}/>
                     )}
                     <Stack.Screen name="Register" component={RegisterScreen} options={{headerShown:false}}/>
+                    <Stack.Screen name="Reset" component={ResetScreen} options={{headerShown:false}}/>
                 </Stack.Navigator>
             </NavigationContainer>
         </AuthContext.Provider>

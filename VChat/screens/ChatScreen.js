@@ -418,7 +418,7 @@ const acceptSong = () => {
                   {!callAccepted ? <Text>连接中</Text> : null}
               <Drawer
                 sidebar={
-                    <MessageArea userid={5} roomid={"4-5"} close={drawerRef.current ? drawerRef.current.closeDrawer:()=>[]}/>
+                    <MessageArea userid={userid} roomid={roomid} close={drawerRef.current ? drawerRef.current.closeDrawer:()=>[]}/>
 
                 }
                  position="right"

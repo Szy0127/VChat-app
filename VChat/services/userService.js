@@ -6,12 +6,15 @@ import sha256 from "crypto-js/sha256";
 const enc = (password)=>{
     return sha256(password + nonce.toString()).toString();
 }
-export const sendVerification = (form, callback) => {
-    postRequest_formData(apiUrl + "/sendVerification", form, callback);
+export const sendVerification = (email, callback) => {
+    postRequest_formData(apiUrl + "/sendVerification", {email}, callback);
 }
 
-export const modifyPassword = (form, callback) => {
-    postRequest_formData(apiUrl + "/modifyPassword", form, callback);
+export const modifyPassword = (email,password,password_confirm,verification, callback) => {
+    if(!password_exam(password,password_confirm)){
+        return;
+    }
+    postRequest_formData(apiUrl + "/modifyPassword", {email,password:enc(password),verification}, callback);
 }
 
 export const checkSession =  (callback) => {
@@ -47,23 +50,29 @@ export const updateSocketID = (socketID) => {
 }
 
 let email_reg = /^([a-zA-Z]|[0-9])(\w|\-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/;
-export const register = (username,password,password_confirm,email,callback)=>{
-    if(username==''){
-        Toast.fail("请输入用户名",1);
-        return;
-    }
+const password_exam = (password,password_confirm) =>{
     if(password==''){
         Toast.fail("请输入密码",1);
-        return;
+        return false;
     }
     if(password.length < 6){
         Toast.fail("密码长度至少6位",1);
-        return;
+        return false;
     }
     // console.log(password,password_confirm,password==password_confirm);
     //一定要加括号
     if(!(password==password_confirm)){
         Toast.fail("两次密码不一致",1);
+        return false;
+    }
+    return true;
+}
+export const register = (username,password,password_confirm,email,callback)=>{
+    if(username==''){
+        Toast.fail("请输入用户名",1);
+        return;
+    }
+    if(!password_exam(password,password_confirm)){
         return;
     }
     if(!email_reg.test(email)){
