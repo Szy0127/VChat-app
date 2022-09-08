@@ -26,7 +26,8 @@ export const Avatar = (props)=>{
             style={{
                 width: size,
                 height: size,
-                borderRadius:size/2
+                borderRadius:size/2,
+                marginHorizontal:3
               }}
             source={{
             uri: url,

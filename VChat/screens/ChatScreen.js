@@ -102,6 +102,8 @@ function ChatScreen(props) {
   const [songName, setSongName] = useState('');
   const [songUrl, setSongUrl] = useState('');
 
+  const [showRTCView,setShowRTCView] = useState(true);
+
   const [gobangState, gobangDispatcher] = useReducer(
       Dispatch,
       State
@@ -397,7 +399,7 @@ const acceptSong = () => {
         )
       } */}
 
-          {stream &&
+          {showRTCView && stream &&
               <RTCView
               streamURL={stream.toURL()}
               style={styles.stream} />
@@ -409,30 +411,41 @@ const acceptSong = () => {
             //   autoPlay
             //   muted
             //   ref={userVideo} /> 
-            otherStream && 
+            showRTCView && otherStream && 
             <RTCView
             streamURL={otherStream.toURL()}
             style={styles.stream} />
               : null
           }
-                  {!callAccepted ? <Text>连接中</Text> : null}
-              <Drawer
+                  {
+                  !callAccepted ? <Text>连接中</Text> : 
+                  <Drawer
                 sidebar={
-                    <MessageArea userid={userid} roomid={roomid} close={drawerRef.current ? drawerRef.current.closeDrawer:()=>[]}/>
+                    <MessageArea userid={userid} roomid={roomid} close={drawerRef.current ? ()=>{
+                      drawerRef.current.closeDrawer();
+                      setShowRTCView(true);
+                    }:()=>{setShowRTCView(true)}}/>
 
                 }
-                 position="right"
-                open={false}
+                position="right"
                 drawerRef={el => (drawerRef.current=el)}
                 // onOpenChange={this.onOpenChange}
                 drawerBackgroundColor="#ccc"
             >
                 <View >
-                <Button type="primary" onPress={() => drawerRef.current && drawerRef.current.openDrawer()}>
+                <Button type="primary" onPress={() => {
+                    if(drawerRef.current){
+                      drawerRef.current.openDrawer();
+                      setShowRTCView(false);
+                    }
+
+                    }}>
                     文字聊天
                 </Button>
                 </View>
             </Drawer>
+                  }
+              
                         {callAccepted && !gobangState.asking && !gobangState.asked ? (
                             <>
                                 <Button onPress={launchGobang}>五子棋</Button>
@@ -502,7 +515,7 @@ const styles = StyleSheet.create({
   },
   stream: {
     flex: 5,
-    height:100
+    height:50
   },
   row:{
     flex:1,
