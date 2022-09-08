@@ -239,13 +239,18 @@ function ChatScreen(props) {
     connectionRef.current = peer;
     console.log("answer call finish");
   }
+
   const endcall = () => {
+    socket.emit("endCall",opposite);
+    finishCall();
+    Toast.alert("对方已退出,将回到主页",2);
+}
+const finishCall = ()=>{
     setCallEnded(true);
-    socket.emit("endCall",{to:opposite})
-    console.log(connectionRef.current);
     // connectionRef.current.destory();
     props.navigation.navigate('Tab');
   }
+
 
 
   // //RTCView外面如果还有View则不能正常显示
@@ -272,7 +277,7 @@ function ChatScreen(props) {
       setUserid(_userid);
       setRoomid(_roomid);
       console.log("userid,roomid:",_userid,_roomid);
-      socket.on("endCall",()=>{endcall()});
+      socket.on("endCall",()=>{finishCall()});
       const startPeer = async ()=>{
         // console.log("type:",props.navigation.getParam('type',''));
         
