@@ -31,6 +31,8 @@ import { addAttendance } from '../services/historyService';
 import AsyncStorage from '@react-native-community/async-storage';
 import { TwoUsrRoomID } from '../utils/hash';
 import backgroundImg from "../asserts/background-vertical.png";
+import { ChatRoom } from './ChatRoom';
+import { RoomScreen } from './RoomScreen';
 // function BookListAndDetail(){
 //     return (
 //         <SafeAreaProvider>
@@ -83,6 +85,14 @@ const MyTabNavigator = (props)=>{
             options={{
                 headerShown:false,
                 tabBarLabel:'好友',
+                tabBarIcon: ({ color, size }) => (
+                    <FontAwesome5 name="user-friends" color={color} size={size} />
+                  ),
+                }}/>
+        <Tab.Screen name='Room' component={RoomScreen} 
+            options={{
+                headerShown:false,
+                tabBarLabel:'房间',
                 tabBarIcon: ({ color, size }) => (
                     <FontAwesome5 name="user-friends" color={color} size={size} />
                   ),
@@ -212,6 +222,7 @@ export function HomeScreen(props){
                 <Stack.Navigator initialRouteName='Tab'>
                     <Stack.Screen name="Tab" component={MyTabNavigator} options={{headerShown:false}}/>
                     <Stack.Screen name="chatting" component={ChatScreen} options={{headerShown:false}}/>
+                    <Stack.Screen name="chatroom" component={ChatRoom} options={{headerShown:false}}/>
                 </Stack.Navigator>
             </SocketContext.Provider>
 

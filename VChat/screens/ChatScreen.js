@@ -251,22 +251,6 @@ const finishCall = ()=>{
   }
 
 
-
-  // //RTCView外面如果还有View则不能正常显示
-  // const call_onPress = (callID)=>{
-  //     // console.log(callID);
-  //     getSocketIDByUserID(callID,
-  //       (data)=>{
-  //         if(data.length>0){
-  //             callusr(data);
-  //         }else{
-  //           alert("好友不在线");
-  //         }
-  //       }
-  //       )
-  // }
-
-
   useEffect(() => {
     // getFriends((data)=>setFriends(data));
 
