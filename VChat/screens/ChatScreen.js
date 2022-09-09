@@ -428,7 +428,7 @@ const acceptSong = () => {
                       <TextInput 
                       onChangeText={text => setMessageContent(text)}
                       value={messageContent}
-                      backgroundColor={"#faaaaa"}
+                      backgroundColor={"#eeffff"}
                       />
                       <Button type="primary"onPress={async()=>{
                           console.log(messageContent);

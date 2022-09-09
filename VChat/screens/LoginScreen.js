@@ -42,6 +42,7 @@ function fetchData({name,password,signIn}) {
                     try {
                         await AsyncStorage.setItem("username",responseData.data.username);
                         await AsyncStorage.setItem("userID",responseData.data.userID.toString());
+                        await AsyncStorage.setItem("email",responseData.data.email);
                     } catch (error) {
                         // Error saving data
                         console.log("save username error");

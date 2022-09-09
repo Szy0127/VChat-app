@@ -3,6 +3,7 @@ import {postRequest_formData, postRequest_formData_async, postRequest_json} from
 import { loading } from "../utils/utils";
 import { nonce } from "../configs/constantConfig";
 import sha256 from "crypto-js/sha256";
+import { Toast } from "@ant-design/react-native";
 const enc = (password)=>{
     return sha256(password + nonce.toString()).toString();
 }
@@ -91,3 +92,13 @@ export const uploadAvatar = async (image, userid, callback) => {
 export const getAvatar = (userid, callback) => {
     postRequest_formData(apiUrl + "/getAvatar", {userid}, callback);
 }
+
+export const modifyUserEmail = async (userid, email) => {
+    if(!email_reg.test(email)){
+        Toast.fail("邮箱格式错误",1);
+        return false;
+    }
+    await postRequest_formData_async(apiUrl + "/modifyEmail", {userid, email});
+    return true;
+}
+
