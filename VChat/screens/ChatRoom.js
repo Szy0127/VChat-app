@@ -76,7 +76,7 @@ export const ChatRoom = (props)=>{
         socket.on('roomID', (data) => {
           const { roomId } = data;
           //存
-          if (roomid === null) {
+          if (_roomid === null) {
             createRoomMulti(roomId, userid);
           }
           console.log(roomId);
@@ -87,13 +87,17 @@ export const ChatRoom = (props)=>{
           setMessageUpdate(data);
         })
     
-        RoomManager.getLocalPreviewAndInitRoomConnection(host, username, userid, roomid, socket);
+        RoomManager.getLocalPreviewAndInitRoomConnection(_host, username, userid, _roomid, socket);
       }, [])
 
+      const ri = roomid ? roomid : roomID;
       return (
         <View style={{flex:1,
             flexDirection: 'column', 
             justifyContent: 'center',}}>
+                <Text>
+                    <Text>{`房间号${ri}`}</Text>
+                </Text>
                 {
                     showRTCView ? 
                     <RTCView

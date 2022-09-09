@@ -184,9 +184,9 @@ export function HomeScreen(props){
                 });
 
                 _socket.on('inviteToRoom', (data) => {
-                    console.log(data);
+                    console.log(data.roomId);
                     const roomid = data.roomId;
-
+                    
                     Modal.alert("会议邀请",`${data.from}正在呼叫`,[
                         {
                             text:'接听',
