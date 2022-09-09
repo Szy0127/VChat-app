@@ -158,7 +158,8 @@ export function HomeScreen(props){
                                      {
                                         type: 'callee',
                                         callerSignal,
-                                        callerInfo
+                                        callerInfo,
+                                        opposite
                                     }
                                 );
                             }

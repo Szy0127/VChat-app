@@ -25,6 +25,7 @@ import { configure } from '../configs/iceServerConfig';
 import { addAttendance } from '../services/historyService';
 import { MessageArea } from '../components/MessageArea';
 import { ErrorBoundary } from 'react-error-boundary';
+import { sendMessage } from '../services/chatService';
 /*
 
 
@@ -79,6 +80,7 @@ function ChatScreen(props) {
   const [roomid,setRoomid] = useState('');
   const [otherStream, setOtherStream] = useState(null);
   const [opposite,setOpposite] = useState('');
+  const [opposite_id,setOpposite_id] = useState(0);
   const myVideo = useRef();
   const [me, setMe] = useState('');
   const [idtoCall, setidtoCall] = useState('');
@@ -90,7 +92,7 @@ function ChatScreen(props) {
   const userVideo = useRef();
   const connectionRef = useRef();
 
-  const [friendName,setFriendName] = useState('');
+  const [messageContent,setMessageContent] = useState('');
 
   const [inConversation,setInConversation] = useState(false);
 
@@ -104,6 +106,8 @@ function ChatScreen(props) {
   const [songUrl, setSongUrl] = useState('');
 
   const [showRTCView,setShowRTCView] = useState(true);
+
+  const [fresh,setFresh] = useState(false);
 
   const [gobangState, gobangDispatcher] = useReducer(
       Dispatch,
@@ -279,7 +283,7 @@ const finishCall = ()=>{
       socket.on("endCall",()=>{finishCall(); Toast.info("对方已退出,将回到主页",2);});
       const startPeer = async ()=>{
         // console.log("type:",props.navigation.getParam('type',''));
-        
+        setOpposite_id(message.opposite);
         if (message.type === 'caller') {
                   setOpposite(message.calleeSocketID);
                   await callusr(message.calleeSocketID,_roomid,_userid);
@@ -328,6 +332,12 @@ const finishCall = ()=>{
       playMusic(data.songUrl);
       songDispatcher("accepted");
   })
+
+  socket.on('message', (data) => {
+    console.log(data);
+    setFresh(!fresh);
+})
+
 }, []);
 
 const launchGobang = () => {
@@ -385,24 +395,6 @@ const acceptSong = () => {
         !inConversation &&
         (
           <View>
-            <View>
-            <TextTextInput 
-            placeholder='好友用户名'
-            onChangeText={text => setFriendName(text)}
-            value={friendName}
-            />
-            <Button onPress={()=>{
-                console.log(friendName);
-                addFriend(friendName,(data)=>{
-                    if(data){
-                      Toast.success("添加成功",1);
-                      getFriends((data)=>setFriends(data));
-                    }else{
-                      Toast.fail("不存在此用户",1);
-                    }
-                });
-            }}>添加好友</Button>
-          </View>
               <FlatList
                 data={friends}
                 renderItem={renderItem}
@@ -432,7 +424,25 @@ const acceptSong = () => {
                   <Drawer
                 sidebar={
                   <View style={{flex:1,backgroundColor:"#ffffff"}}>
-                    <MessageArea userid={userid} roomid={roomid} />
+                    <MessageArea userid={userid} roomid={roomid} fresh={fresh} />
+                      <TextInput 
+                      onChangeText={text => setMessageContent(text)}
+                      value={messageContent}
+                      backgroundColor={"#faaaaa"}
+                      />
+                      <Button type="primary"onPress={async()=>{
+                          console.log(messageContent);
+                          const success = await sendMessage(userid, opposite_id,roomid,messageContent );
+                              if(success){
+                                setFresh(!fresh);
+                                socket.emit('message', {"Two": true, to:opposite});
+                                // Toast.success("添加成功",1);
+                                // getFriends((data)=>setFriends(data));
+                              }else{
+                                Toast.fail("发送失败",1);
+                              }
+                          ;
+                      }}>发送</Button>
                     <Button  type="primary" onPress={drawerRef.current ? ()=>{
                       drawerRef.current.closeDrawer();
                       setShowRTCView(true);
@@ -462,20 +472,20 @@ const acceptSong = () => {
               
                         {callAccepted && !gobangState.asking && !gobangState.asked ? (
                             <>
-                                <Button onPress={launchGobang}>五子棋</Button>
+                                <Button  type="primary" onPress={launchGobang}>五子棋</Button>
                             </>
                         ) : null}
 
                         {gobangState.asked && !gobangState.on ? (
                             <>
                                 <Text>对方向你发送五子棋邀请</Text>
-                                <Button onPress={acceptGobang}>接受</Button>
+                                <Button  type="primary" onPress={acceptGobang}>接受</Button>
                             </>
                         ) : null}
                         {gobangState.asking && !gobangState.on ? (
                             <>
                                 <Text>正在发送五子棋邀请</Text>
-                                <Button onPress={launchGobang}>再次发送</Button>
+                                <Button  type="primary" onPress={launchGobang}>再次发送</Button>
                             </>
                         ) : null}
 
@@ -490,20 +500,20 @@ const acceptSong = () => {
                                 <TextInput placeholder={"歌名"} onChangeText={(e) => {
                                     setSongName(e)
                                 }} />
-                                <Button onPress={launchSong}>一起听歌</Button>
+                                <Button  type="primary" onPress={launchSong}>一起听歌</Button>
                             </>
                         ) : null}
 
                         {songState.asked && !songState.on ? (
                             <>
                                 <Text>{`对方邀请你听歌${songName}`}</Text>
-                                <Button onPress={acceptSong}>接受</Button>
+                                <Button  type="primary" onPress={acceptSong}>接受</Button>
                             </>
                         ) : null}
                         {songState.asking && !songState.on ? (
                             <>
                                 <Text>正在发送听歌邀请</Text>
-                                <Button onPress={launchSong}>再次发送</Button>
+                                <Button   type="primary" onPress={launchSong}>再次发送</Button>
                             </>
                         ) : null}
                         {songState.on ?
@@ -511,7 +521,7 @@ const acceptSong = () => {
                             : null
                         }
         <View style={styles.footer}>
-          <Button onPress={()=>{
+          <Button  type="primary" onPress={()=>{
         
         endcall();
       }}>结束通话</Button>

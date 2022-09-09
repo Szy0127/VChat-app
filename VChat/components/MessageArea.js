@@ -14,7 +14,7 @@ export const MessageArea = (props)=>{
         getMessage(props.roomid, props.userid, (data) => {
             setMsg(data);
         });
-    }, [props.roomid,props.userid])
+    }, [props.roomid,props.userid,props.fresh])
     return         <View style={{flex:1}}>
                 {
                     msg.map((item, idx) => {
