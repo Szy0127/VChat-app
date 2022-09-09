@@ -102,3 +102,14 @@ export const modifyUserEmail = async (userid, email) => {
     return true;
 }
 
+export const getUsers = (username, callback) => {
+    postRequest_formData(apiUrl + "/getUsers", {username: username}, callback);
+}
+
+export const getFriendRequestReceived = (callback) => {
+    postRequest_json(apiUrl + "/getFriendRequestReceived", {}, callback);
+}
+
+export const acceptFriendRequest = async (friend_id) => {
+    await postRequest_formData_async(apiUrl + "/acceptFriendRequest", {friend_id: friend_id});
+}

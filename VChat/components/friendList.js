@@ -38,7 +38,7 @@ export default function FriendList(props) {
             console.log(data);
             setFriends(data);
         });
-    }, [])
+    }, [props.fresh])
 
     // const showDrawer = (index) => {
     //     setId(index);
