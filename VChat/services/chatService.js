@@ -9,3 +9,8 @@ export const sendMessage = async (message) => {
 export const getMessage = (room_id, receiver_id, callback) => {
     postRequest_formData(apiUrl + "/getMessage", {room_id: room_id, receiver_id: receiver_id}, callback);
 }
+
+export const verifyRoomid = async (room_id) => {
+    return await postRequest_formData_async(apiUrl + "/verifyRoomid", {room_id: room_id});
+}
+

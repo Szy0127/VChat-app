@@ -45,6 +45,7 @@ export const ChatRoom = (props)=>{
     const host = message.host;
     const roomid = message.roomid;
 
+    console.log(host,roomid);
     useEffect(() => {
         // getFriends(data => {
         //   setFriends(data);
