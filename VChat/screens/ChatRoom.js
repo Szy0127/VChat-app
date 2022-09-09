@@ -96,6 +96,7 @@ export const ChatRoom = (props)=>{
                 }
             )
         }
+        <Button type="primary" onPress={()=>{props.navigation.navigate("Tab")}}>退出</Button>
         </View>
       )
 

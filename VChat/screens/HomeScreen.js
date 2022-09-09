@@ -182,6 +182,33 @@ export function HomeScreen(props){
                     ]);
     
                 });
+
+                _socket.on('inviteToRoom', (data) => {
+                    console.log(data);
+                    const roomid = data.roomId;
+
+                    Modal.alert("会议邀请",`${data.from}正在呼叫`,[
+                        {
+                            text:'接听',
+                            onPress:()=>{
+                                addAttendance(roomid, 1, userid, 0, 1);
+                                props.navigation.navigate('chatroom', 
+                                     {
+                                        roomid,
+                                        host: false
+                                    }
+                                );
+                            }
+                        },
+                        {
+                            text:'拒绝',
+                            onPress:()=>{addAttendance(roomid, 1, userid, 0, 0);},
+                            style:'cancel'
+                        }
+                    ]);
+
+                })
+
             }
         
             f();
