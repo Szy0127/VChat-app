@@ -22,6 +22,7 @@ import { MessageArea } from '../components/MessageArea';
 import * as ws from '../services/websocket'
 import * as RoomManager from '../services/RoomManager'
 import { createRoomMulti } from '../services/historyService';
+import { sendMessage } from '../services/chatService';
 export const ChatRoom = (props)=>{
     const {socket,stream} = useContext(SocketContext);
 
@@ -38,19 +39,31 @@ export const ChatRoom = (props)=>{
     const [friends, setFriends] = useState([]);
     const [invite, setInvite] = useState(false);
 
-    const [streams,setStreams] = useState([]);
-    const addStreamCallback = (_streams)=>{setStreams(_streams)};
-    
-    let message = props.navigation.getState().routes[1].params;
-    const host = message.host;
-    const roomid = message.roomid;
+    const [messageContent,setMessageContent] = useState('');
 
-    console.log(host,roomid);
+    const [fresh,setFresh] = useState(false);
+
+    const [streams,setStreams] = useState([]);
+    const [showRTCView,setShowRTCView] = useState(true);
+    const addStreamCallback = (_streams)=>{setStreams(_streams)};
+
+
+    const [host,setHost] = useState('');
+    const [roomid,setRoomid] = useState('');
+
+
+    const drawerRef = useRef(null);
+
     useEffect(() => {
         // getFriends(data => {
         //   setFriends(data);
         // });
-    
+        console.log("in chatRoom");
+        let message = props.navigation.getState().routes[1].params;
+        const _host = message.host;
+        const _roomid = message.roomid;
+        setHost(_host);
+        setRoomid(_roomid);
         ws.connectWithSocketIOServer(socket,addStreamCallback,stream);
     
         socket.on('room member changed', (data) => {
@@ -81,12 +94,16 @@ export const ChatRoom = (props)=>{
         <View style={{flex:1,
             flexDirection: 'column', 
             justifyContent: 'center',}}>
-             <RTCView
-                streamURL={stream.toURL()}
-                style={{flex:1}} />
+                {
+                    showRTCView ? 
+                    <RTCView
+                    streamURL={stream.toURL()}
+                    style={{flex:1}} />:null
+                }
+
         {
             
-            streams.map(
+            showRTCView? streams.map(
                 (item,index)=>{
                     return (
                         <RTCView
@@ -94,9 +111,56 @@ export const ChatRoom = (props)=>{
                         style={{flex:1}} />
                     )
                 }
-            )
+            ):null
         }
-        <Button type="primary" onPress={()=>{props.navigation.navigate("Tab")}}>退出</Button>
+                  <Drawer
+                sidebar={
+                  <View style={{flex:1,backgroundColor:"#ffffff"}}>
+                    <MessageArea userid={userid} roomid={roomid} fresh={fresh} />
+                      <TextInput 
+                      onChangeText={text => setMessageContent(text)}
+                      value={messageContent}
+                      backgroundColor={"#eeffff"}
+                      />
+                      <Button type="primary"onPress={async()=>{
+                          console.log(messageContent);
+                          const success = await sendMessage(userid, 0,roomid,messageContent );
+                              if(success){
+                                setFresh(!fresh);
+                                socket.emit('message', {"Two": false, roomId:roomid});
+                                // Toast.success("添加成功",1);
+                                // getFriends((data)=>setFriends(data));
+                              }else{
+                                Toast.fail("发送失败",1);
+                              }
+                          ;
+                      }}>发送</Button>
+                    <Button  type="primary" onPress={drawerRef.current ? ()=>{
+                      drawerRef.current.closeDrawer();
+                      setShowRTCView(true);
+                    }:()=>{setShowRTCView(true)}}>
+                    关闭
+                </Button></View>
+
+                }
+                position="right"
+                drawerRef={el => (drawerRef.current=el)}
+                // onOpenChange={this.onOpenChange}
+                drawerBackgroundColor="#ccc"
+            >
+                <View >
+                <Button type="primary" onPress={() => {
+                    if(drawerRef.current){
+                      drawerRef.current.openDrawer();
+                      setShowRTCView(false);
+                    }
+
+                    }}>
+                    文字聊天
+                </Button>
+                </View>
+            </Drawer>
+        <Button type="primary" onPress={()=>{props.navigation.navigate('Tab');}}>退出</Button>
         </View>
       )
 
