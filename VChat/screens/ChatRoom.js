@@ -96,7 +96,7 @@ export const ChatRoom = (props)=>{
             flexDirection: 'column', 
             justifyContent: 'center',}}>
                 <Text>
-                    <Text>{`房间号${ri}`}</Text>
+                    <Text selectable={true}>{`房间号${ri}`}</Text>
                 </Text>
                 {
                     showRTCView ? 
