@@ -50,7 +50,7 @@ function fetchData({name,password,signIn}) {
                 _storeName();
 
             }else{
-                Alert.alert("用户名或密码错误！");
+                Toast.fail("用户名或密码错误！",2);
             }
         }
         )
