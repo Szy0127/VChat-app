@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState,useContext,useReducer } from 'react'
 import { Button,Toast,Drawer } from '@ant-design/react-native'
-import { Text,TextInput ,View,StyleSheet,FlatList} from 'react-native'
+import { Text,TextInput ,View,StyleSheet,FlatList,TouchableOpacity,Clipboard} from 'react-native'
 import {
 
   RTCView,
@@ -23,6 +23,7 @@ import * as ws from '../services/websocket'
 import * as RoomManager from '../services/RoomManager'
 import { createRoomMulti } from '../services/historyService';
 import { sendMessage } from '../services/chatService';
+import copy from "copy-to-clipboard";
 export const ChatRoom = (props)=>{
     const {socket,stream} = useContext(SocketContext);
 
@@ -96,7 +97,9 @@ export const ChatRoom = (props)=>{
             flexDirection: 'column', 
             justifyContent: 'center',}}>
                 <Text>
-                    <Text selectable={true}>{`房间号${ri}`}</Text>
+                <TouchableOpacity  activeOpacity={0.8} onPress={()=>{ Clipboard.setString(ri);}}>
+                    <Text>{`房间号${ri}`}</Text>
+                </TouchableOpacity>
                 </Text>
                 {
                     showRTCView ? 
