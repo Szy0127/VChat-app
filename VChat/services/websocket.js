@@ -17,6 +17,7 @@ export const connectWithSocketIOServer = (socket,addStreamCallback,stream) => {
     socket.on('conn-prepare', (data) => {
         const { connUserSocketId } = data;
         //isinitiator = false
+        console.log("conn-prepare");
         RoomManager.prepareNewPeerConnection(connUserSocketId, false, socket,addStreamCallback,stream);
 
         //让initiator = ture一方创建peer
@@ -29,6 +30,7 @@ export const connectWithSocketIOServer = (socket,addStreamCallback,stream) => {
     socket.on('IniConnect', (data) => {
         const { connUserSocketId } = data;
         //isinitiator = true
+        console.log("IniConnect");
         RoomManager.prepareNewPeerConnection(connUserSocketId, true, socket,addStreamCallback,stream);
     });
 

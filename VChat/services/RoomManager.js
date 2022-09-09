@@ -38,6 +38,7 @@ let id = 2;
 export const prepareNewPeerConnection = (connUserSocketId, isInitiator, socket,addStreamCallback,stream) => {
   console.log("in Peer");
   //实例化对等连接对象
+  console.log("initiator:",isInitiator);
   peers[connUserSocketId] = new Peer({
     initiator: isInitiator,
     config: configure,
@@ -55,6 +56,7 @@ export const prepareNewPeerConnection = (connUserSocketId, isInitiator, socket,a
   peers[connUserSocketId]._pc.addStream(stream);
   //信令数据传递
   peers[connUserSocketId].on('signal', (data) => {
+    // console.log("prepareNewPeerConnection signal:",data);
     const signalData = {
       signal: data,
       connUserSocketId: connUserSocketId,
@@ -63,18 +65,24 @@ export const prepareNewPeerConnection = (connUserSocketId, isInitiator, socket,a
   });
 
   //获取媒体流stream
-  peers[connUserSocketId].on('stream', (_stream) => {
-    console.log('成功获取远程Stream');
-    //显示接收的stream媒体流
-    // success(stream, `video-user${id}`);
-    // id++;
-    streams = [...streams, _stream];
+  // peers[connUserSocketId].on('stream', (_stream) => {
+  //   console.log('成功获取远程Stream');
+  //   //显示接收的stream媒体流
+  //   // success(stream, `video-user${id}`);
+  //   // id++;
+  //   streams = [...streams, _stream];
+  //   addStreamCallback(streams);
+  // });
+  peers[connUserSocketId]._pc.addEventListener('addstream',event=>{
+    console.log("addStream");
+    streams = [...streams, event.stream];
     addStreamCallback(streams);
-  });
+  })
 
 };
 
 export const handleSignalingData = (data) => {
+  // console.log("handleSignalingData:",data.signal);
   peers[data.connUserSocketId].signal(data.signal);
 };
 
