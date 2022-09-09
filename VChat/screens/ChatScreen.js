@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState,useContext,useReducer } from 'react'
 import { Button,Toast,Drawer } from '@ant-design/react-native'
 import { Text,TextInput ,View,StyleSheet,FlatList} from 'react-native'
+import { playMusic,stopMusic } from '../services/music';
 import {
   RTCPeerConnection,
   RTCIceCandidate,
@@ -11,6 +12,7 @@ import {
   mediaDevices,
   registerGlobals
 } from 'react-native-webrtc';
+import Gobang from '../game/gobang/gobang';
 import Peer from 'simple-peer';
 import {withNavigation} from 'react-navigation';
 import { nodeServerUrl } from './urlconfig';
@@ -251,6 +253,7 @@ function ChatScreen(props) {
 const finishCall = ()=>{
     setCallEnded(true);
     // connectionRef.current.destory();
+    stopMusic();
     props.navigation.navigate('Tab');
   }
 
@@ -287,35 +290,35 @@ const finishCall = ()=>{
   },wait_for);
       startPeer();
 
-  socket.on('launchGobang', (data) => {
-      // setAskGobang(true);
-      gobangDispatcher("asked");
-  });
-  socket.on('acceptGobang', (data) => {
-      // setGobangOn(true);
-      gobangDispatcher("accepted");
-  })
+  // socket.on('launchGobang', (data) => {
+  //     // setAskGobang(true);
+  //     gobangDispatcher("asked");
+  // });
+  // socket.on('acceptGobang', (data) => {
+  //     // setGobangOn(true);
+  //     gobangDispatcher("accepted");
+  // })
 
-  socket.on('launchSong', (data) => {
-      setSongName(data.songName);
-      setSongUrl(data.songUrl);
-      songDispatcher("asked");
-  });
-  socket.on('launchSongError', () => {
-      songDispatcher("reset");
-      alert("查找歌曲失败");
-  });
+  // socket.on('launchSong', (data) => {
+  //     setSongName(data.songName);
+  //     setSongUrl(data.songUrl);
+  //     songDispatcher("asked");
+  // });
+  // socket.on('launchSongError', () => {
+  //     songDispatcher("reset");
+  //     alert("查找歌曲失败");
+  // });
 
-  socket.on('acceptSong', (data) => {
-      // setGobangOn(true);
-      if (data.songUrl === "") {
-          alert("找不到此歌曲")
-          return;
-      }
-      setSongUrl(data.songUrl);
-      playMusic(data.songUrl);
-      songDispatcher("accepted");
-  })
+  // socket.on('acceptSong', (data) => {
+  //     // setGobangOn(true);
+  //     if (data.songUrl === "") {
+  //         alert("找不到此歌曲")
+  //         return;
+  //     }
+  //     setSongUrl(data.songUrl);
+  //     playMusic(data.songUrl);
+  //     songDispatcher("accepted");
+  // })
 
   socket.on('message', (data) => {
     console.log(data);
@@ -324,49 +327,49 @@ const finishCall = ()=>{
 
 }, []);
 
-const launchGobang = () => {
-  if (opposite.length == 0) {
-      alert("请先发起通话");
-      return;
-  }
-  socket.emit('launchGobang', { to: opposite });
-  gobangDispatcher("asking");
-}
-const acceptGobang = () => {
-  if (!gobangState.asked) {
-      alert("未接受到请求");
-  }
-  socket.emit('acceptGobang', { to: opposite });
-  // setGobangOn(true);
-  gobangDispatcher("accepted");
-}
+// const launchGobang = () => {
+//   if (opposite.length == 0) {
+//       alert("请先发起通话");
+//       return;
+//   }
+//   socket.emit('launchGobang', { to: opposite });
+//   gobangDispatcher("asking");
+// }
+// const acceptGobang = () => {
+//   if (!gobangState.asked) {
+//       alert("未接受到请求");
+//   }
+//   socket.emit('acceptGobang', { to: opposite });
+//   setGobangOn(true);
+//   gobangDispatcher("accepted");
+// }
 
-const launchSong = () => {
-  if (opposite.length == 0) {
-      alert("请先发起通话");
-      return;
-  }
-  if (songName.length == 0) {
-      alert("请输入歌名");
-      return;
-  }
-  socket.emit('launchSong', { to: opposite, from: socket.id, songName });
-  songDispatcher("asking");
-}
-const acceptSong = () => {
-  if (!songState.asked) {
-      alert("未接受到请求");
-      return;
-  }
-  if (songUrl === "") {
-      alert("无音乐链接")
-      return;
-  }
-  socket.emit('acceptSong', { to: opposite, songUrl: songUrl });
+// const launchSong = () => {
+//   if (opposite.length == 0) {
+//       alert("请先发起通话");
+//       return;
+//   }
+//   if (songName.length == 0) {
+//       alert("请输入歌名");
+//       return;
+//   }
+//   socket.emit('launchSong', { to: opposite, from: socket.id, songName });
+//   songDispatcher("asking");
+// }
+// const acceptSong = () => {
+//   if (!songState.asked) {
+//       alert("未接受到请求");
+//       return;
+//   }
+//   if (songUrl === "") {
+//       alert("无音乐链接")
+//       return;
+//   }
+//   socket.emit('acceptSong', { to: opposite, songUrl: songUrl });
 
-  playMusic(songUrl);
-  songDispatcher("accepted");
-}
+//   playMusic(songUrl);
+//   songDispatcher("accepted");
+// }
 
 
   return (
@@ -454,7 +457,7 @@ const acceptSong = () => {
             </Drawer>
                   }
               
-                        {callAccepted && !gobangState.asking && !gobangState.asked ? (
+                        {/* {callAccepted && !gobangState.asking && !gobangState.asked ? (
                             <>
                                 <Button  type="primary" onPress={launchGobang}>五子棋</Button>
                             </>
@@ -476,16 +479,16 @@ const acceptSong = () => {
                         {
                             // gobangOn ? <GobangTest meID={me} opponentID={opposite}/> : null
                             gobangState.on ?
-                                <Gobang meID={socket.id} opponentID={opposite} tag={gobangState.asked ? 1 : 2} /> : null
-                        }
+                                <Gobang socket={socket} meID={socket.id} opponentID={opposite} tag={gobangState.asked ? 1 : 2} /> : null
+                        } */}
 
-                        {callAccepted && !songState.asking && !songState.asked ? (
-                            <>
-                                <TextInput placeholder={"歌名"} onChangeText={(e) => {
+                        {/* {callAccepted && !songState.asking && !songState.asked ? (
+                            <View style={{flexDirection:"row"}}>
+                                <TextInput style={{flex:8}} placeholder={"歌名"} onChangeText={(e) => {
                                     setSongName(e)
                                 }} />
-                                <Button  type="primary" onPress={launchSong}>一起听歌</Button>
-                            </>
+                                <Button style={{flex:1}} type="primary" onPress={launchSong}>一起听歌</Button>
+                            </View>
                         ) : null}
 
                         {songState.asked && !songState.on ? (
@@ -503,8 +506,8 @@ const acceptSong = () => {
                         {songState.on ?
                             <Text>{`正在一起听歌${songName}`}</Text>
                             : null
-                        }
-        <View style={styles.footer}>
+                        } */}
+        <View >
           <Button  type="primary" onPress={()=>{
         
         endcall();
