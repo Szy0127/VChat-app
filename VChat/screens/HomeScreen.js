@@ -86,7 +86,7 @@ const MyTabNavigator = (props)=>{
                 headerShown:false,
                 tabBarLabel:'好友',
                 tabBarIcon: ({ color, size }) => (
-                    <FontAwesome5 name="user-friends" color={color} size={size} />
+                    <MaterialCommunityIcons name="account-multiple-outline" color={color} size={size} />
                   ),
                 }}/>
         <Tab.Screen name='Room' component={RoomScreen} 
