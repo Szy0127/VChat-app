@@ -60,7 +60,7 @@ export const joinRoom = (roomId, username, userid, socket) => {
         userid
     };
     console.log(data);
-    socket.emit('joinroom', data);
+    socket.emit('joinRoom', data);
 };
 
 export const signalPeerData = (data, socket) => {

@@ -5,8 +5,7 @@ import React from 'react';
 import { ImageBackground } from 'react-native';
 import {Profile} from '../components/Profile';
 import { createStackNavigator } from '@react-navigation/stack';
-import {BookScreen} from './BookScreen';
-import {BookListScreen} from "./BookListScreen"
+
 import { SafeAreaProvider} from 'react-native-safe-area-context';
 import { Button,Modal} from '@ant-design/react-native';
 import ChatScreen from './ChatScreen';
@@ -17,7 +16,7 @@ import { io } from 'socket.io-client';
 import { SocketContext } from '../context';
 import { SafeAreaView } from 'react-navigation';
 import { MediaStream,mediaDevices } from 'react-native-webrtc';
-import FriendList from '../components/friendList';
+
 import { openCamera } from '../configs/cameraConfig';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { FriendScreen } from './FriendScreen';

@@ -87,7 +87,7 @@ export const handleSignalingData = (data) => {
 };
 
 export const removePeerConnection = (data) => {
-  // const { socketId } = data;
+  const { socketId } = data;
   // const videoContainer = document.getElementById(socketId);
   // const videoElement = document.getElementById(`${socketId}-video`);
 
@@ -100,11 +100,11 @@ export const removePeerConnection = (data) => {
   //   videoContainer.removeChild(videoElement);
   //   videoContainer.parentNode.removeChild(videoContainer);
 
-  //   if (peers[socketId]) {
-  //     peers[socketId].destroy();
-  //   }
+    if (peers[socketId]) {
+      peers[socketId].destroy();
+    }
 
-  //   delete peers[socketId];
+    delete peers[socketId];
   // }
 };
 

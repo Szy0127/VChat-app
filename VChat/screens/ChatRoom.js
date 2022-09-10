@@ -1,11 +1,12 @@
-import React, { useEffect, useRef, useState,useContext,useReducer } from 'react'
-import { Button,Toast,Drawer } from '@ant-design/react-native'
+import React, { useEffect, useRef, useState,useContext,useReducer, Fragment } from 'react'
+import { Button,Toast,Drawer,Modal } from '@ant-design/react-native'
 import { Text,TextInput ,View,StyleSheet,FlatList,TouchableOpacity,Clipboard} from 'react-native'
 import {
 
   RTCView,
 
 } from 'react-native-webrtc';
+import FriendList from '../components/friendList';
 import Peer from 'simple-peer';
 import {withNavigation} from 'react-navigation';
 import { nodeServerUrl } from './urlconfig';
@@ -52,6 +53,8 @@ export const ChatRoom = (props)=>{
     const [host,setHost] = useState('');
     const [roomid,setRoomid] = useState('');
 
+
+    const [visible,setVisible] = useState(false);
 
     const drawerRef = useRef(null);
 
@@ -101,6 +104,23 @@ export const ChatRoom = (props)=>{
                     <Text>{`房间号${ri}`}</Text>
                 </TouchableOpacity>
                 </Text>
+                <Button type="primary" onPress={
+                  ()=>{
+                    setVisible(true);
+                }}>邀请好友</Button>
+                <Modal
+                onClose={()=>setVisible(false)}
+                title={"邀请好友"}
+                visible={visible}
+                transparent
+                style={{flexDirection:"column",justifyContent:"flex-start"}}
+                animationType="slide-up"
+            >
+                <FriendList navigation={props.navigation} type={'room'} roomID={ri} socket={socket}/>
+                <Button type="primary" onPress={()=>setVisible(false)}>
+                    关闭
+              </Button>
+            </Modal>
                 {
                     showRTCView ? 
                     <RTCView
@@ -135,6 +155,7 @@ export const ChatRoom = (props)=>{
                               if(success){
                                 setFresh(!fresh);
                                 socket.emit('message', {"Two": false, roomId:roomid});
+                                setMessageContent('');
                                 // Toast.success("添加成功",1);
                                 // getFriends((data)=>setFriends(data));
                               }else{
@@ -167,7 +188,11 @@ export const ChatRoom = (props)=>{
                 </Button>
                 </View>
             </Drawer>
-        <Button type="primary" onPress={()=>{props.navigation.navigate('Tab');}}>退出</Button>
+        <Button type="primary" onPress={()=>{
+          socket.emit('leaveRoom',()=>{});
+          socket.removeAllListeners();
+          props.navigation.navigate('Tab');
+          }}>退出</Button>
         </View>
       )
 

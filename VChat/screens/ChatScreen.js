@@ -253,7 +253,7 @@ function ChatScreen(props) {
 const finishCall = ()=>{
     setCallEnded(true);
     // connectionRef.current.destory();
-    stopMusic();
+    // stopMusic();
     props.navigation.navigate('Tab');
   }
 
@@ -423,6 +423,7 @@ const finishCall = ()=>{
                               if(success){
                                 setFresh(!fresh);
                                 socket.emit('message', {"Two": true, to:opposite});
+                                setMessageContent('');
                                 // Toast.success("添加成功",1);
                                 // getFriends((data)=>setFriends(data));
                               }else{
