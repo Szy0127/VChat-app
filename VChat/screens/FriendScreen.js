@@ -69,7 +69,7 @@ export const FriendScreen = (props)=>{
 
 
                 <View style={{flexDirection:"row",marginVertical:5}}>
-                    <TextInput style={{flex:6,backgroundColor:"#ffffff"}} placeholder={"用户名"} onChangeText={(e) => {
+                    <TextInput style={{flex:4,backgroundColor:"#ffffff"}} placeholder={"用户名"} onChangeText={(e) => {
                         setSearchName(e);
                         if(e==''){
                             setUsers([]);
