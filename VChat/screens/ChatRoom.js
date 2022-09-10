@@ -88,7 +88,7 @@ export const ChatRoom = (props)=>{
         });
     
         socket.on('message', (data) => {
-          setMessageUpdate(data);
+          setFresh(!fresh);
         })
     
         RoomManager.getLocalPreviewAndInitRoomConnection(_host, username, userid, _roomid, socket);
