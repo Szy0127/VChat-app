@@ -252,6 +252,9 @@ function ChatScreen(props) {
 }
 const finishCall = ()=>{
     setCallEnded(true);
+    if(timeout.current){
+      clearTimeout(timeout.current);
+    }
     // connectionRef.current.destory();
     // stopMusic();
     props.navigation.navigate('Tab');
