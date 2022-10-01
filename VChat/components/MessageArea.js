@@ -17,7 +17,7 @@ export const MessageArea = (props)=>{
     }, [props.roomid,props.userid,props.fresh])
     return         <View style={{flex:1}}>
                 {
-                    msg && msg.map((item, idx) => {
+                    msg ? msg.map((item, idx) => {
                         return item['userID'] === parseInt(props.userid) ?
                         <View key={idx} style={{flexDirection:"row",alignItems:"center",justifyContent:"flex-end",backgroundColor:"#9acd32",height:40,marginVertical:3}}>
                             <Text style={{fontSize:22}}>{item.content}</Text>
@@ -30,7 +30,7 @@ export const MessageArea = (props)=>{
                         <Text style={{fontSize:22}}>{item.content}</Text>
                         {/* <Text>{item.time}</Text> */}
                         </View>
-                    })
+                    }):null
                 }
 </View>
 }

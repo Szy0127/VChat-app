@@ -100,7 +100,7 @@ export const ChatRoom = (props)=>{
             flexDirection: 'column', 
             justifyContent: 'center',}}>
                 <Text>
-                <TouchableOpacity  activeOpacity={0.8} onPress={()=>{ Clipboard.setString(ri);}}>
+                <TouchableOpacity  activeOpacity={0.8} onPress={()=>{ Clipboard.setString(ri);Toast.success("复制成功",1)}}>
                     <Text>{`房间号${ri}`}</Text>
                 </TouchableOpacity>
                 </Text>
